@@ -28,6 +28,9 @@ class DiceGameApp {
         this.appContainer.innerHTML = '';
         this.appContainer.appendChild(screen);
 
+        // translate static bits (if any)
+        translateContainer(this.appContainer);
+
         const player = this.gameState.players[this.gameState.currentPlayerIndex];
         this.appContainer.querySelector('#splash-player-name').textContent = player.name;
 
@@ -47,6 +50,32 @@ class DiceGameApp {
         }, interval);
     }
 
+    // ensure dropdown is present on every screen
+    ensureLangSelector() {
+        // if selector already exists (e.g. on welcome) nothing to do
+        if (document.getElementById('language-selector')) return;
+
+        const container = document.createElement('div');
+        container.className = 'language-selector-container';
+        container.innerHTML = `
+            <select id="language-selector" class="language-selector">
+                <option value="en" data-i18n="language.english">English</option>
+                <option value="pl" data-i18n="language.polish">Polski</option>
+            </select>
+        `;
+        this.appContainer.insertBefore(container, this.appContainer.firstChild);
+        translateContainer(container);
+
+        const sel = document.getElementById('language-selector');
+        if (sel) {
+            sel.value = i18n.current;
+            sel.addEventListener('change', async (e) => {
+                await i18n.load(e.target.value);
+                location.reload();
+            });
+        }
+    }
+
     // Screen: Welcome
     showWelcomeScreen() {
         const template = document.getElementById('screen-welcome');
@@ -54,6 +83,11 @@ class DiceGameApp {
 
         this.appContainer.innerHTML = '';
         this.appContainer.appendChild(screen);
+
+        // translate static text
+        translateContainer(this.appContainer);
+        // show selector only on welcome screen; other screens omit
+        this.ensureLangSelector();
 
         this.appContainer.querySelector('#welcome-start').addEventListener('click', () => {
             this.showPlayerSetupScreen();
@@ -68,6 +102,9 @@ class DiceGameApp {
         this.appContainer.innerHTML = '';
         this.appContainer.appendChild(screen);
 
+        // translate text on player setup screen
+        translateContainer(this.appContainer);
+
         // Elements
         const playerBtns = this.appContainer.querySelectorAll('.player-btn');
         const playerInputsContainer = this.appContainer.querySelector('#player-inputs');
@@ -81,7 +118,7 @@ class DiceGameApp {
         // Initialize gameState players to 2 default names
         const defaultCount = 2;
         this.gameState.players = Array(defaultCount).fill(null).map((_, i) => ({
-            name: `Player ${i + 1}`,
+            name: i18n.t('playerSetup.defaultName', { number: i + 1 }),
             scores: {}
         }));
 
@@ -91,9 +128,11 @@ class DiceGameApp {
             for (let i = 0; i < count; i++) {
                 const group = document.createElement('div');
                 group.className = 'player-input-group';
+                const labelText = i18n.t('playerSetup.playerNameLabel', { index: i + 1 });
+                const defaultName = this.gameState.players[i] ? this.gameState.players[i].name : i18n.t('playerSetup.defaultName', { number: i + 1 });
                 group.innerHTML = `
-                    <label>Player ${i + 1} Name</label>
-                    <input type="text" placeholder="Enter name" value="${this.gameState.players[i] ? this.gameState.players[i].name : `Player ${i+1}`}" data-player-index="${i}">
+                    <label>${labelText}</label>
+                    <input type="text" placeholder="${i18n.t('playerSetup.enterName')}" value="${defaultName}" data-player-index="${i}">
                 `;
                 playerInputsContainer.appendChild(group);
             }
@@ -123,7 +162,7 @@ class DiceGameApp {
 
                 // adjust gameState players array
                 const newPlayers = Array(count).fill(null).map((_, i) => ({
-                    name: (this.gameState.players[i] && this.gameState.players[i].name) ? this.gameState.players[i].name : `Player ${i+1}`,
+                    name: (this.gameState.players[i] && this.gameState.players[i].name) ? this.gameState.players[i].name : i18n.t('playerSetup.defaultName', { number: i + 1 }),
                     scores: (this.gameState.players[i] && this.gameState.players[i].scores) ? this.gameState.players[i].scores : {}
                 }));
                 this.gameState.players = newPlayers;
@@ -153,9 +192,12 @@ class DiceGameApp {
         this.appContainer.innerHTML = '';
         this.appContainer.appendChild(screen);
 
+        // translate any static elements
+        translateContainer(this.appContainer);
+
         const player = this.gameState.players[this.gameState.currentPlayerIndex];
-        this.appContainer.querySelector('#player-name').textContent = `${player.name} - Scorecard`;
-        this.appContainer.querySelector('#round-info').textContent = `Round ${this.gameState.currentRound}`;
+        this.appContainer.querySelector('#player-name').textContent = i18n.t('scorecard.playerNameFormat', { name: player.name });
+        this.appContainer.querySelector('#round-info').textContent = i18n.t('scorecard.roundInfo', { round: this.gameState.currentRound });
 
         this.renderScorecard();
 
@@ -198,7 +240,7 @@ class DiceGameApp {
             bonusRow.className = 'scorecard-row';
             bonusRow.style.backgroundColor = '#314158';
             bonusRow.innerHTML = `
-                <div class="scorecard-icon crown-icon">Bonus</div>
+                <div class="scorecard-icon crown-icon">${i18n.t('scorecard.upperBonus')}</div>
                 <div class="scorecard-value">${bonusValue}</div>
             `;
             tableCont.appendChild(bonusRow);
@@ -208,7 +250,7 @@ class DiceGameApp {
         const upperTotalRow = document.createElement('div');
         upperTotalRow.className = 'scorecard-row mb-3';
         upperTotalRow.innerHTML = `
-            <div class="scorecard-icon crown-icon">Upper Sum</div>
+            <div class="scorecard-icon crown-icon">${i18n.t('scorecard.upperSum')}</div>
             <div class="scorecard-value">${upperSum + bonusValue}</div>
         `;
         tableCont.appendChild(upperTotalRow);
@@ -228,7 +270,8 @@ class DiceGameApp {
             row.className = 'scorecard-row ' + (isUsed ? 'used' : 'available');
 
             // const label = CATEGORY_NAMES[cat] || cat;
-            const icon = cat === 'general' || cat === 'general_bonus' ? 'Yahtzee' : CATEGORY_NAMES[cat];
+            const rawIcon = cat === 'general' || cat === 'general_bonus' ? 'Yahtzee' : CATEGORY_NAMES[cat];
+            const icon = i18n.t(`category.${cat}`, { default: rawIcon });
 
             // show icon and value only
             row.innerHTML = `
@@ -256,7 +299,7 @@ class DiceGameApp {
         const lowerTotalRow = document.createElement('div');
         lowerTotalRow.className = 'scorecard-row mb-3';
         lowerTotalRow.innerHTML = `
-            <div class="scorecard-icon crown-icon">Lower Sum</div>
+            <div class="scorecard-icon crown-icon">${i18n.t('scorecard.lowerSum')}</div>
             <div class="scorecard-value">${lowerTotal}</div>
         `;
         tableCont.appendChild(lowerTotalRow);
@@ -267,7 +310,7 @@ class DiceGameApp {
         sumRow.className = 'scorecard-row';
         sumRow.style.fontWeight = 'bold';
         sumRow.innerHTML = `
-            <div class="scorecard-icon crown-icon">Sum</div>
+            <div class="scorecard-icon crown-icon">${i18n.t('scorecard.sum')}</div>
             <div class="scorecard-value" style="color: var(--orange);">${grandTotal}</div>
         `;
         tableCont.appendChild(sumRow);
@@ -302,8 +345,11 @@ class DiceGameApp {
         this.appContainer.appendChild(screen);
 
         const player = this.gameState.players[this.gameState.currentPlayerIndex];
-        this.appContainer.querySelector('#gameplay-player-name').textContent = player.name;
-        this.appContainer.querySelector('#gameplay-round-info').textContent = `Round ${this.gameState.currentRound}`;
+        this.appContainer.querySelector('#gameplay-player-name').textContent = i18n.t('gameplay.playerName', { name: player.name });
+        this.appContainer.querySelector('#gameplay-round-info').textContent = i18n.t('gameplay.roundInfo', { round: this.gameState.currentRound });
+
+        // translate potential static headers
+        translateContainer(this.appContainer);
 
         let selectedDice = [];
         const continueBtn = this.appContainer.querySelector('#save-round');
@@ -402,7 +448,12 @@ class DiceGameApp {
             return;
         }
 
-        const validCombinations = ScoringEngine.getValidCombinations(selected, player.scores);
+        let validCombinations = ScoringEngine.getValidCombinations(selected, player.scores);
+        // localize combo icons/texts
+        validCombinations = validCombinations.map(c => ({
+            ...c,
+            icon: i18n.t(`category.${c.category}`, { default: c.icon || CATEGORY_NAMES[c.category] || c.category })
+        }));
 
         // Build a map of valid combinations for quick lookup
         const validComboMap = {};
@@ -432,12 +483,12 @@ class DiceGameApp {
             });
 
         if (categoriesToShow.length === 0) {
-            this.appContainer.querySelector('#combinations-title').textContent = 'All categories filled';
+            this.appContainer.querySelector('#combinations-title').textContent = i18n.t('combos.allFilled');
             continueBtn.disabled = true;
             return;
         }
 
-        this.appContainer.querySelector('#combinations-title').textContent = 'Available options';
+        this.appContainer.querySelector('#combinations-title').textContent = i18n.t('combos.availableOptions');
         continueBtn.disabled = true;
 
         categoriesToShow.forEach((combo) => {
@@ -446,7 +497,7 @@ class DiceGameApp {
 
             const btn = document.createElement('button');
             btn.className = 'combination-btn';
-            btn.textContent = 'Select';
+            btn.textContent = i18n.t('common.select');
 
             btn.addEventListener('click', () => {
                 // Remove selected class from all buttons
@@ -461,8 +512,9 @@ class DiceGameApp {
                 continueBtn.disabled = false;
             });
 
+            const comboLabel = i18n.t(`category.${combo.category}`, { default: CATEGORY_NAMES[combo.category] || combo.category });
             item.innerHTML = `
-                <div class="combination-label">${CATEGORY_NAMES[combo.category] || combo.category}</div>
+                <div class="combination-label">${comboLabel}</div>
                 <div class="combination-score" ${combo.isZero ? '' : ''}>${combo.score}</div>
             `;
             item.appendChild(btn);
@@ -481,9 +533,12 @@ class DiceGameApp {
         this.appContainer.innerHTML = '';
         this.appContainer.appendChild(screen);
 
+        // translate static pieces
+        translateContainer(this.appContainer);
+
         const player = this.gameState.players[this.gameState.currentPlayerIndex];
         this.appContainer.querySelector('#joker-player-name').textContent = player.name;
-        this.appContainer.querySelector('#joker-round-info').textContent = `Round ${this.gameState.currentRound}`;
+        this.appContainer.querySelector('#joker-round-info').textContent = i18n.t('scorecard.roundInfo', { round: this.gameState.currentRound });
 
         const dice = this.gameState.pendingYahtzeeBonus.dice;
         let selectedJokerCategory = null;
@@ -492,7 +547,7 @@ class DiceGameApp {
         const currentBonus = player.scores['general_bonus'] || 0;
         const newBonus = currentBonus + 100;
         this.appContainer.querySelector('#joker-bonus-text').innerHTML =
-            `Bonus: +100 points <br><small>(Total bonus: ${newBonus} pts)</small>`;
+            i18n.t('joker.bonusInfoWithTotal', { total: newBonus });
 
         // Get valid joker options
         const jokerOptions = ScoringEngine.getJokerOptions(dice, player.scores);
@@ -500,7 +555,7 @@ class DiceGameApp {
         const confirmBtn = this.appContainer.querySelector('#joker-confirm');
 
         if (jokerOptions.length === 0) {
-            optionsList.innerHTML = '<p style="color: var(--orange);">No valid placement options available</p>';
+            optionsList.innerHTML = `<p style="color: var(--orange);">${i18n.t('joker.noOptions')}</p>`;
             return;
         }
 
@@ -511,7 +566,7 @@ class DiceGameApp {
 
             const btn = document.createElement('button');
             btn.className = 'combination-btn';
-            btn.textContent = 'Select';
+            btn.textContent = i18n.t('common.select');
 
             btn.addEventListener('click', () => {
                 // Remove previous selection
@@ -523,10 +578,11 @@ class DiceGameApp {
                 confirmBtn.disabled = false;
             });
 
+            const reasonText = option.reasonKey ? i18n.t(option.reasonKey) : option.reason;
             item.innerHTML = `
                 <div class="combination-label" style="flex: 1;">
-                    <div>${CATEGORY_NAMES[option.category] || option.category}</div>
-                    <small style="color: var(--slate-600);">${option.reason}</small>
+                    <div>${i18n.t(`category.${option.category}`, { default: CATEGORY_NAMES[option.category] || option.category })}</div>
+                    <small style="color: var(--slate-600);">${reasonText}</small>
                 </div>
                 <div class="combination-score">${option.score}</div>
             `;
@@ -536,7 +592,7 @@ class DiceGameApp {
 
         confirmBtn.addEventListener('click', () => {
             if (!selectedJokerCategory) {
-                alert('Please select a placement category');
+                alert(i18n.t('joker.selectCategoryAlert'));
                 return;
             }
 
@@ -572,6 +628,8 @@ class DiceGameApp {
         this.appContainer.appendChild(screen);
 
         const resultsTable = this.appContainer.querySelector('#results-table');
+        // translate any static text
+        translateContainer(this.appContainer);
 
         const sorted = this.gameState.players
             .map((p, idx) => ({
@@ -630,41 +688,43 @@ class DiceGameApp {
         // Upper section
         const upperCategories = ['ones', 'twos', 'threes', 'fours', 'fives', 'sixes'];
         let upperSum = 0;
-        html += '<div class="score-section"><h4>Upper</h4>';
+        html += `<div class="score-section"><h4>${i18n.t('scorecard.upperSection')}</h4>`;
 
         upperCategories.forEach((cat) => {
             const score = scores[cat] ?? '-';
             if (score !== '-') upperSum += score;
-            html += `<div class="score-row"><span>${CATEGORY_NAMES[cat]}</span><span>${score}</span></div>`;
+            const label = i18n.t(`category.${cat}`, { default: CATEGORY_NAMES[cat] });
+            html += `<div class="score-row"><span>${label}</span><span>${score}</span></div>`;
         });
 
-        html += `<div class="score-row"><span>Upper Sum</span><span>${upperSum}</span></div>`;
+        html += `<div class="score-row"><span>${i18n.t('scorecard.upperSum')}</span><span>${upperSum}</span></div>`;
 
         // Upper bonus
         const upperBonus = upperSum >= 63 ? 35 : 0;
         if (upperBonus > 0) {
-            html += `<div class="score-row"><span>Upper Bonus</span><span>${upperBonus}</span></div>`;
+            html += `<div class="score-row"><span>${i18n.t('scorecard.upperBonusLabel')}</span><span>${upperBonus}</span></div>`;
         }
-        html += `<div class="score-row score-total"><span>Upper Total</span><span>${upperSum + upperBonus}</span></div>`;
+        html += `<div class="score-row score-total"><span>${i18n.t('scorecard.upperTotalLabel')}</span><span>${upperSum + upperBonus}</span></div>`;
         html += '</div>';
 
         // Lower section
         const lowerCategories = ['three', 'four', 'full', 'ss', 'ls', 'general', 'general_bonus', 'chance'];
         let lowerSum = 0;
-        html += '<div class="score-section"><h4>Lower</h4>';
+        html += `<div class="score-section"><h4>${i18n.t('scorecard.lowerSection')}</h4>`;
 
         lowerCategories.forEach((cat) => {
             const score = scores[cat] ?? '-';
             if (score !== '-') lowerSum += score;
-            html += `<div class="score-row"><span>${CATEGORY_NAMES[cat]}</span><span>${score}</span></div>`;
+            const label = i18n.t(`category.${cat}`, { default: CATEGORY_NAMES[cat] });
+            html += `<div class="score-row"><span>${label}</span><span>${score}</span></div>`;
         });
 
-        html += `<div class="score-row score-total"><span>Lower Total</span><span>${lowerSum}</span></div>`;
+        html += `<div class="score-row score-total"><span>${i18n.t('scorecard.lowerTotalLabel')}</span><span>${lowerSum}</span></div>`;
         html += '</div>';
 
         // Grand total
         const grandTotal = (upperSum + upperBonus) + lowerSum;
-        html += `<div class="score-section"><div class="score-row score-grand-total"><span>Grand Total</span><span>${grandTotal}</span></div></div>`;
+        html += `<div class="score-section"><div class="score-row score-grand-total"><span>${i18n.t('scorecard.grandTotalLabel')}</span><span>${grandTotal}</span></div></div>`;
 
         html += '</div>';
         return html;

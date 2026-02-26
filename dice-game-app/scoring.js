@@ -177,6 +177,7 @@ class ScoringEngine {
                 score: upperScore,
                 icon: CATEGORY_ICONS[matchingUpperCat],
                 isRequired: true,
+                reasonKey: 'joker.mustFillMatching',
                 reason: `Must fill matching upper category`
             });
             return options; // Only offer matching upper if it's available
@@ -206,6 +207,7 @@ class ScoringEngine {
                     score: score,
                     icon: CATEGORY_ICONS[cat],
                     isRequired: false,
+                    reasonKey: 'joker.jokerPlacement',
                     reason: 'Joker placement (as wildcard)',
                     bonus: 100
                 });
