@@ -145,19 +145,21 @@ class ScoringEngine {
         return dice.reduce((a, b) => a + b, 0);
     }
 
-    // Check if this is a Yahtzee bonus (Yahtzee rolled, primary general already used)
+    // Check if this is a Yahtzee bonus (Yahtzee rolled, primary general already used and scored)
+    // A bonus only applies when the Yahtzee category has a positive score (not when it was filled with 0).
     static isYahtzeeBonus(dice, usedCategories) {
-        return this.isYahtzee(dice) && usedCategories.general !== undefined;
+        return this.isYahtzee(dice) && usedCategories.general === 50;
     }
 
     // Get valid joker placement options for a Yahtzee bonus
     static getJokerOptions(dice, usedCategories) {
-        if (!this.isYahtzee(dice) || usedCategories.general === undefined) {
+        // only offer joker options if a true Yahtzee has been counted for 50 points
+        if (!this.isYahtzee(dice) || usedCategories.general !== 50) {
             return [];
         }
 
         const options = [];
-        
+
         // Determine the value of the Yahtzee (5 matching dice)
         const counts = this.countDice(dice);
         const yahtzeeValue = Object.entries(counts).find(([_, count]) => count === 5)[0];
@@ -198,7 +200,7 @@ class ScoringEngine {
 
                 const scoreType = lowerCategoryValues[cat];
                 score = scoreType === 'sum' ? this.scoreChance(dice) : scoreType;
-                
+
                 options.push({
                     category: cat,
                     score: score,
@@ -216,7 +218,7 @@ class ScoringEngine {
             upperCategories.forEach((cat, idx) => {
                 if (usedCategories[cat] === undefined) {
                     const dieValue = idx + 1;
-                    const score = dieValue === parseInt(yahtzeeValue) 
+                    const score = dieValue === parseInt(yahtzeeValue)
                         ? this.scoreUpperSection(dice, dieValue)
                         : 0; // 0 if doesn't match
 

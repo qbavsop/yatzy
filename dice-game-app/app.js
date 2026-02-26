@@ -20,6 +20,33 @@ class DiceGameApp {
         this.showWelcomeScreen();
     }
 
+    // new splash sequence before showing scorecard
+    showPlayerSplash(nextScreen) {
+        const template = document.getElementById('screen-splash');
+        const screen = template.content.cloneNode(true);
+
+        this.appContainer.innerHTML = '';
+        this.appContainer.appendChild(screen);
+
+        const player = this.gameState.players[this.gameState.currentPlayerIndex];
+        this.appContainer.querySelector('#splash-player-name').textContent = player.name;
+
+        const progress = this.appContainer.querySelector('#splash-timer-progress');
+        let elapsed = 0;
+        const duration = 3000;
+        const interval = 50;
+        progress.style.width = '0%';
+        const timer = setInterval(() => {
+            elapsed += interval;
+            const pct = Math.min(100, (elapsed / duration) * 100);
+            progress.style.width = pct + '%';
+            if (elapsed >= duration) {
+                clearInterval(timer);
+                nextScreen();
+            }
+        }, interval);
+    }
+
     // Screen: Welcome
     showWelcomeScreen() {
         const template = document.getElementById('screen-welcome');
@@ -108,7 +135,8 @@ class DiceGameApp {
         startBtn.addEventListener('click', () => {
             this.gameState.currentPlayerIndex = 0;
             this.gameState.currentRound = 1;
-            this.showScorecardScreen();
+            // show preparation splash then scorecard
+            this.showPlayerSplash(() => this.showScorecardScreen());
         });
     }
 
@@ -126,7 +154,7 @@ class DiceGameApp {
         this.appContainer.appendChild(screen);
 
         const player = this.gameState.players[this.gameState.currentPlayerIndex];
-        this.appContainer.querySelector('#player-name').textContent = `${player.name}'s Scorecard`;
+        this.appContainer.querySelector('#player-name').textContent = `${player.name} - Scorecard`;
         this.appContainer.querySelector('#round-info').textContent = `Round ${this.gameState.currentRound}`;
 
         this.renderScorecard();
@@ -165,14 +193,16 @@ class DiceGameApp {
 
         // Bonus (upper section)
         const bonusValue = upperSum >= 63 ? 35 : 0;
-        const bonusRow = document.createElement('div');
-        bonusRow.className = 'scorecard-row';
-        bonusRow.style.backgroundColor = '#314158';
-        bonusRow.innerHTML = `
-            <div class="scorecard-icon crown-icon">Bonus</div>
-            <div class="scorecard-value">${bonusValue}</div>
-        `;
-        tableCont.appendChild(bonusRow);
+        if (bonusValue > 0) {
+            const bonusRow = document.createElement('div');
+            bonusRow.className = 'scorecard-row';
+            bonusRow.style.backgroundColor = '#314158';
+            bonusRow.innerHTML = `
+                <div class="scorecard-icon crown-icon">Bonus</div>
+                <div class="scorecard-value">${bonusValue}</div>
+            `;
+            tableCont.appendChild(bonusRow);
+        }
 
         // Upper subtotal (includes bonus)
         const upperTotalRow = document.createElement('div');
@@ -224,7 +254,7 @@ class DiceGameApp {
         // Lower subtotal (bottom total)
         const lowerTotal = lowerSum + lowerBonus;
         const lowerTotalRow = document.createElement('div');
-        lowerTotalRow.className = 'scorecard-row';
+        lowerTotalRow.className = 'scorecard-row mb-3';
         lowerTotalRow.innerHTML = `
             <div class="scorecard-icon crown-icon">Lower Sum</div>
             <div class="scorecard-value">${lowerTotal}</div>
@@ -343,7 +373,8 @@ class DiceGameApp {
                 }
             }
 
-            this.showScorecardScreen();
+            // show the splash before scorecard
+            this.showPlayerSplash(() => this.showScorecardScreen());
         });
     }
 
@@ -528,7 +559,7 @@ class DiceGameApp {
                 }
             }
 
-            this.showScorecardScreen();
+            this.showPlayerSplash(() => this.showScorecardScreen());
         });
     }
 
@@ -611,7 +642,9 @@ class DiceGameApp {
 
         // Upper bonus
         const upperBonus = upperSum >= 63 ? 35 : 0;
-        html += `<div class="score-row"><span>Upper Bonus</span><span>${upperBonus}</span></div>`;
+        if (upperBonus > 0) {
+            html += `<div class="score-row"><span>Upper Bonus</span><span>${upperBonus}</span></div>`;
+        }
         html += `<div class="score-row score-total"><span>Upper Total</span><span>${upperSum + upperBonus}</span></div>`;
         html += '</div>';
 
