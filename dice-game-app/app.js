@@ -1,5 +1,11 @@
 // Main application logic
 
+function escapeHtml(str) {
+    const div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+}
+
 class DiceGameApp {
     constructor() {
         this.appContainer = document.getElementById('app');
@@ -132,7 +138,7 @@ class DiceGameApp {
                 const defaultName = this.gameState.players[i] ? this.gameState.players[i].name : i18n.t('playerSetup.defaultName', { number: i + 1 });
                 group.innerHTML = `
                     <label>${labelText}</label>
-                    <input type="text" placeholder="${i18n.t('playerSetup.enterName')}" value="${defaultName}" data-player-index="${i}">
+                    <input type="text" placeholder="${i18n.t('playerSetup.enterName')}" value="${escapeHtml(defaultName)}" data-player-index="${i}">
                 `;
                 playerInputsContainer.appendChild(group);
             }
@@ -395,7 +401,7 @@ class DiceGameApp {
         continueBtn.addEventListener('click', () => {
             const selected = Object.values(selectedDice).filter(d => d !== undefined);
             if (selected.length < 5) {
-                alert('Please select all 5 dice');
+                alert(i18n.t('gameplay.selectAllAlert'));
                 return;
             }
 
