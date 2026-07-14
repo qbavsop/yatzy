@@ -3,7 +3,8 @@
   "welcome.title": "Yahtzee",
   "welcome.subtitle": "Dice Game Scorer",
   "welcome.description": "Score your offline dice game rounds with ease",
-  "welcome.start": "Start Game",
+  "welcome.start": "New Game",
+  "welcome.continueGame": "Continue Game",
 
   "playerSetup.selectPlayers": "Select number of players",
   "playerSetup.playerNameLabel": "Player {{index}} Name",
@@ -29,6 +30,10 @@
   "joker.bonusInfoWithTotal": "Bonus: +100 points <br><small>(Total bonus: {{total}} pts)</small>",
   "joker.mustFillMatching": "Must fill matching upper category",
   "joker.jokerPlacement": "Joker placement (as wildcard)",
+
+  "quit.confirmMessage": "Are you sure you want to quit the game?",
+  "quit.confirmYes": "Yes",
+  "quit.confirmNo": "No",
 
   "results.title": "Results",
   "results.newGame": "New Game",

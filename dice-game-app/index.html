@@ -33,7 +33,10 @@
                 </select>
             </div>
 
-            <button id="welcome-start" class="btn-primary btn-full" data-i18n="welcome.start">Start Game</button>
+            <div class="btn-column">
+                <button id="welcome-start" class="btn-primary btn-full" data-i18n="welcome.start">New Game</button>
+                <button id="welcome-continue" class="btn-secondary btn-full" data-i18n="welcome.continueGame" hidden>Continue Game</button>
+            </div>
         </div>
     </template>
 
@@ -75,7 +78,10 @@
                 <div id="round-info">Round 1</div>
             </div>
             <div id="scorecard-table" class="scorecard-table"></div>
-            <button id="proceed-to-dice" class="btn-primary btn-full" data-i18n="scorecard.continue">Continue</button>
+            <div class="btn-row">
+                <button id="scorecard-quit" class="btn-quit">X</button>
+                <button id="proceed-to-dice" class="btn-primary btn-full" data-i18n="scorecard.continue">Continue</button>
+            </div>
         </div>
     </template>
 
@@ -97,7 +103,10 @@
                 <div id="combinations-list"></div>
             </div>
 
-            <button id="save-round" class="btn-primary btn-full" disabled data-i18n="gameplay.continue">Continue</button>
+            <div class="btn-row">
+                <button id="gameplay-quit" class="btn-quit">X</button>
+                <button id="save-round" class="btn-primary btn-full" disabled data-i18n="gameplay.continue">Continue</button>
+            </div>
         </div>
     </template>
 
@@ -119,7 +128,10 @@
                 <div id="joker-options-list"></div>
             </div>
 
-            <button id="joker-confirm" class="btn-primary btn-full" disabled data-i18n="joker.continue">Continue</button>
+            <div class="btn-row">
+                <button id="joker-quit" class="btn-quit">X</button>
+                <button id="joker-confirm" class="btn-primary btn-full" disabled data-i18n="joker.continue">Continue</button>
+            </div>
         </div>
     </template>
 

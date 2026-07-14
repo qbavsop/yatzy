@@ -6,6 +6,8 @@ function escapeHtml(str) {
     return div.innerHTML;
 }
 
+const SAVE_STORAGE_KEY = 'diceGameApp.savedGame';
+
 class DiceGameApp {
     constructor() {
         this.appContainer = document.getElementById('app');
@@ -26,6 +28,58 @@ class DiceGameApp {
         this.showWelcomeScreen();
     }
 
+    // Persist just enough state to resume a game after a reload
+    saveGame() {
+        try {
+            const data = {
+                version: 1,
+                players: this.gameState.players,
+                currentPlayerIndex: this.gameState.currentPlayerIndex,
+                currentRound: this.gameState.currentRound
+            };
+            localStorage.setItem(SAVE_STORAGE_KEY, JSON.stringify(data));
+        } catch (e) {
+            console.warn('saveGame failed:', e);
+        }
+    }
+
+    loadSavedGame() {
+        try {
+            const raw = localStorage.getItem(SAVE_STORAGE_KEY);
+            if (!raw) return null;
+            const data = JSON.parse(raw);
+            if (!data || !Array.isArray(data.players) || data.players.length === 0
+                || typeof data.currentPlayerIndex !== 'number'
+                || typeof data.currentRound !== 'number') {
+                return null;
+            }
+            return data;
+        } catch (e) {
+            return null;
+        }
+    }
+
+    clearSavedGame() {
+        localStorage.removeItem(SAVE_STORAGE_KEY);
+    }
+
+    // Advance to the next player/round, persist progress, then continue or show results
+    advanceTurnAndContinue() {
+        this.gameState.currentPlayerIndex++;
+        if (this.gameState.currentPlayerIndex >= this.gameState.players.length) {
+            this.gameState.currentPlayerIndex = 0;
+            this.gameState.currentRound++;
+        }
+        this.saveGame();
+
+        if (this.gameState.currentRound > 13) {
+            this.showResultsScreen();
+            return;
+        }
+
+        this.showPlayerSplash(() => this.showScorecardScreen());
+    }
+
     // new splash sequence before showing scorecard
     showPlayerSplash(nextScreen) {
         const template = document.getElementById('screen-splash');
@@ -42,7 +96,7 @@ class DiceGameApp {
 
         const progress = this.appContainer.querySelector('#splash-timer-progress');
         let elapsed = 0;
-        const duration = 3000;
+        const duration = 2000;
         const interval = 50;
         progress.style.width = '0%';
         const timer = setInterval(() => {
@@ -82,6 +136,38 @@ class DiceGameApp {
         }
     }
 
+    // Quit-to-menu confirmation modal, reused by all in-round screens
+    showQuitConfirmModal() {
+        if (document.getElementById('quit-confirm-overlay')) return;
+
+        const overlay = document.createElement('div');
+        overlay.id = 'quit-confirm-overlay';
+        overlay.className = 'modal-overlay';
+        overlay.innerHTML = `
+            <div class="modal-dialog">
+                <p class="modal-message" data-i18n="quit.confirmMessage">Are you sure you want to quit the game?</p>
+                <div class="modal-actions">
+                    <button id="quit-confirm-no" class="btn-secondary" data-i18n="quit.confirmNo">No</button>
+                    <button id="quit-confirm-yes" class="btn-primary" data-i18n="quit.confirmYes">Yes</button>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(overlay);
+        translateContainer(overlay);
+
+        const closeModal = () => overlay.remove();
+
+        overlay.addEventListener('click', (e) => {
+            if (e.target === overlay) closeModal();
+        });
+        overlay.querySelector('#quit-confirm-no').addEventListener('click', closeModal);
+        overlay.querySelector('#quit-confirm-yes').addEventListener('click', () => {
+            this.saveGame();
+            closeModal();
+            this.showWelcomeScreen();
+        });
+    }
+
     // Screen: Welcome
     showWelcomeScreen() {
         const template = document.getElementById('screen-welcome');
@@ -98,6 +184,20 @@ class DiceGameApp {
         this.appContainer.querySelector('#welcome-start').addEventListener('click', () => {
             this.showPlayerSetupScreen();
         });
+
+        const continueBtn = this.appContainer.querySelector('#welcome-continue');
+        const savedGame = this.loadSavedGame();
+        if (savedGame) {
+            continueBtn.hidden = false;
+            continueBtn.addEventListener('click', () => {
+                this.gameState.players = savedGame.players;
+                this.gameState.currentPlayerIndex = savedGame.currentPlayerIndex;
+                this.gameState.currentRound = savedGame.currentRound;
+                this.gameState.gameFinished = false;
+                this.gameState.pendingYahtzeeBonus = null;
+                this.showPlayerSplash(() => this.showScorecardScreen());
+            });
+        }
     }
 
     // Screen: Player Setup (merged count + names)
@@ -180,6 +280,7 @@ class DiceGameApp {
         startBtn.addEventListener('click', () => {
             this.gameState.currentPlayerIndex = 0;
             this.gameState.currentRound = 1;
+            this.saveGame();
             // show preparation splash then scorecard
             this.showPlayerSplash(() => this.showScorecardScreen());
         });
@@ -209,6 +310,10 @@ class DiceGameApp {
 
         this.appContainer.querySelector('#proceed-to-dice').addEventListener('click', () => {
             this.showGameplayScreen();
+        });
+
+        this.appContainer.querySelector('#scorecard-quit').addEventListener('click', () => {
+            this.showQuitConfirmModal();
         });
     }
 
@@ -360,6 +465,10 @@ class DiceGameApp {
         let selectedDice = [];
         const continueBtn = this.appContainer.querySelector('#save-round');
 
+        this.appContainer.querySelector('#gameplay-quit').addEventListener('click', () => {
+            this.showQuitConfirmModal();
+        });
+
         // Render dice grid
         const diceGrid = this.appContainer.querySelector('#dice-grid');
         for (let row = 0; row < 5; row++) {
@@ -413,20 +522,7 @@ class DiceGameApp {
                 this.gameState.selectedCombo = null;
             }
 
-            // Advance to next player or round
-            this.gameState.currentPlayerIndex++;
-            if (this.gameState.currentPlayerIndex >= this.gameState.players.length) {
-                this.gameState.currentPlayerIndex = 0;
-                this.gameState.currentRound++;
-
-                if (this.gameState.currentRound > 13) {
-                    this.showResultsScreen();
-                    return;
-                }
-            }
-
-            // show the splash before scorecard
-            this.showPlayerSplash(() => this.showScorecardScreen());
+            this.advanceTurnAndContinue();
         });
     }
 
@@ -546,6 +642,10 @@ class DiceGameApp {
         this.appContainer.querySelector('#joker-player-name').textContent = player.name;
         this.appContainer.querySelector('#joker-round-info').textContent = i18n.t('scorecard.roundInfo', { round: this.gameState.currentRound });
 
+        this.appContainer.querySelector('#joker-quit').addEventListener('click', () => {
+            this.showQuitConfirmModal();
+        });
+
         const dice = this.gameState.pendingYahtzeeBonus.dice;
         let selectedJokerCategory = null;
 
@@ -609,24 +709,14 @@ class DiceGameApp {
             // Clear pending Yahtzee bonus
             this.gameState.pendingYahtzeeBonus = null;
 
-            // Advance to next player or round
-            this.gameState.currentPlayerIndex++;
-            if (this.gameState.currentPlayerIndex >= this.gameState.players.length) {
-                this.gameState.currentPlayerIndex = 0;
-                this.gameState.currentRound++;
-
-                if (this.gameState.currentRound > 13) {
-                    this.showResultsScreen();
-                    return;
-                }
-            }
-
-            this.showPlayerSplash(() => this.showScorecardScreen());
+            this.advanceTurnAndContinue();
         });
     }
 
     // Screen 6: Results
     showResultsScreen() {
+        this.clearSavedGame();
+
         const template = document.getElementById('screen-results');
         const screen = template.content.cloneNode(true);
 

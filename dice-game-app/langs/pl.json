@@ -3,7 +3,8 @@
   "welcome.title": "Yahtzee",
   "welcome.subtitle": "Punktacja gry w kości",
   "welcome.description": "Łatwe rejestrowanie wyników offline",
-  "welcome.start": "Rozpocznij grę",
+  "welcome.start": "Nowa gra",
+  "welcome.continueGame": "Kontynuuj grę",
 
   "playerSetup.selectPlayers": "Wybierz liczbę graczy",
   "playerSetup.playerNameLabel": "Imię gracza {{index}}",
@@ -29,6 +30,10 @@
   "joker.bonusInfoWithTotal": "Bonus: +100 punktów <br><small>(Suma bonusu: {{total}} pkt)</small>",
   "joker.mustFillMatching": "Wypełnij odpowiadającą kategorię z górnej sekcji",
   "joker.jokerPlacement": "Umieszczenie jokera (działa jako dzika karta)",
+
+  "quit.confirmMessage": "Czy na pewno chcesz przerwać grę?",
+  "quit.confirmYes": "TAK",
+  "quit.confirmNo": "NIE",
 
   "results.title": "Wyniki",
   "results.newGame": "Nowa gra",
