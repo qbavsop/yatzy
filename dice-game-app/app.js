@@ -55,6 +55,46 @@ const PRIVACY_POLICY_HTML = {
         </ul>
         <h3>Kontakt</h3>
         <p>Pytania dotyczące tej polityki? Napisz do nas na adres <a href="mailto:qbavsop@gmail.com">qbavsop@gmail.com</a>.</p>
+    `,
+    de: `
+        <h3>Von Drittanbieterdiensten erfasste Daten</h3>
+        <p><strong>Google AdMob</strong> (Werbung) kann die Werbe-ID deines Geräts (Advertising ID) sowie weitere Geräte-/Nutzungsdaten erfassen, um Banner- und Vollbildanzeigen anzuzeigen und zu messen, einschließlich personalisierter Anzeigen, sofern zulässig.</p>
+        <p><strong>RevenueCat</strong> (In-App-Käufe) erfasst deinen Kaufverlauf und eine anonyme, app-spezifische Nutzer-ID, um den optionalen Kauf "Werbung entfernen" zu verwalten und geräteübergreifend wiederherzustellen.</p>
+        <h3>Warum wir diese Daten erfassen</h3>
+        <ul>
+            <li>Werbe-ID / Gerätedaten (AdMob): zur Anzeige und Messung von In-App-Werbung.</li>
+            <li>Kaufverlauf / anonyme ID (RevenueCat): zum Freischalten und Wiederherstellen des bezahlten Kaufs "Werbung entfernen".</li>
+        </ul>
+        <h3>Datenweitergabe &amp; Sicherheit</h3>
+        <p>Diese Daten werden ausschließlich mit Google AdMob und RevenueCat geteilt, allein zur Bereitstellung der oben genannten Funktionen. Wir verkaufen deine Daten nicht. Alle Daten werden bei der Übertragung verschlüsselt (HTTPS/TLS).</p>
+        <h3>Deine Wahlmöglichkeiten</h3>
+        <ul>
+            <li>Beschränke die Anzeigenpersonalisierung oder setze deine Werbe-ID zurück unter Android-Einstellungen → Datenschutz → Werbung.</li>
+            <li>Kaufe "Werbung entfernen", um Werbung (und die damit verbundene Datenerfassung durch AdMob) vollständig zu deaktivieren.</li>
+            <li>Fordere die Löschung der bei AdMob oder RevenueCat gespeicherten Daten an, indem du uns unten kontaktierst.</li>
+        </ul>
+        <h3>Kontakt</h3>
+        <p>Fragen zu dieser Richtlinie? Kontaktiere uns unter <a href="mailto:qbavsop@gmail.com">qbavsop@gmail.com</a>.</p>
+    `,
+    es: `
+        <h3>Datos recopilados por servicios de terceros</h3>
+        <p><strong>Google AdMob</strong> (publicidad) puede recopilar el identificador de publicidad de tu dispositivo (Advertising ID) y otros datos de dispositivo/uso para mostrar y medir anuncios de banner y de pantalla completa, incluidos anuncios personalizados cuando esté permitido.</p>
+        <p><strong>RevenueCat</strong> (compras dentro de la aplicación) recopila tu historial de compras y un identificador de usuario anónimo específico de la aplicación para gestionar la compra opcional "Quitar anuncios" y restaurarla en otros dispositivos.</p>
+        <h3>Por qué recopilamos estos datos</h3>
+        <ul>
+            <li>Advertising ID / datos del dispositivo (AdMob): para mostrar y medir la publicidad dentro de la aplicación.</li>
+            <li>Historial de compras / ID anónimo (RevenueCat): para desbloquear y restaurar la compra "Quitar anuncios" que pagaste.</li>
+        </ul>
+        <h3>Uso compartido de datos y seguridad</h3>
+        <p>Estos datos se comparten únicamente con Google AdMob y RevenueCat, exclusivamente para proporcionar las funciones anteriores. No vendemos tus datos. Todos los datos se cifran en tránsito (HTTPS/TLS).</p>
+        <h3>Tus opciones</h3>
+        <ul>
+            <li>Limita la personalización de anuncios o restablece tu Advertising ID en Ajustes de Android → Privacidad → Anuncios.</li>
+            <li>Compra "Quitar anuncios" para detener los anuncios (y la recopilación de datos relacionada de AdMob) por completo.</li>
+            <li>Solicita la eliminación de los datos que posean AdMob o RevenueCat contactándonos a continuación.</li>
+        </ul>
+        <h3>Contacto</h3>
+        <p>¿Preguntas sobre esta política? Contáctanos en <a href="mailto:qbavsop@gmail.com">qbavsop@gmail.com</a>.</p>
     `
 };
 
