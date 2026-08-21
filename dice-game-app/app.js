@@ -137,6 +137,17 @@ class DiceGameApp {
             await purchasesCapacitor.Purchases.configure({ apiKey: REVENUECAT_API_KEY });
             const { customerInfo } = await purchasesCapacitor.Purchases.getCustomerInfo();
             this.gameState.adsRemoved = !!customerInfo.entitlements.active[ADS_REMOVED_ENTITLEMENT];
+            // initMonetization() is fire-and-forget from the constructor, so the welcome screen
+            // has usually already rendered (with adsRemoved still at its default false) by the
+            // time this resolves. Refresh the button directly if it's still on screen.
+            const removeAdsBtn = this.appContainer.querySelector('#welcome-remove-ads');
+            if (removeAdsBtn) {
+                // .hidden alone doesn't work here: .text-link's `display: block` (style.css) is an
+                // author-stylesheet rule, which beats the UA stylesheet's `[hidden] { display: none }`
+                // in the cascade regardless of selector specificity. Setting the inline style directly
+                // always wins.
+                removeAdsBtn.style.display = this.gameState.adsRemoved ? 'none' : '';
+            }
         } catch (e) {
             console.warn('initMonetization (RevenueCat) failed:', e);
         }
@@ -403,14 +414,11 @@ class DiceGameApp {
         }
 
         const removeAdsBtn = this.appContainer.querySelector('#welcome-remove-ads');
-        if (this.gameState.adsRemoved) {
-            removeAdsBtn.hidden = true;
-        } else {
-            removeAdsBtn.addEventListener('click', async () => {
-                await this.purchaseRemoveAds();
-                removeAdsBtn.hidden = this.gameState.adsRemoved;
-            });
-        }
+        removeAdsBtn.style.display = this.gameState.adsRemoved ? 'none' : '';
+        removeAdsBtn.addEventListener('click', async () => {
+            await this.purchaseRemoveAds();
+            removeAdsBtn.style.display = this.gameState.adsRemoved ? 'none' : '';
+        });
 
         this.appContainer.querySelector('#welcome-privacy-policy').addEventListener('click', () => {
             this.showPrivacyPolicyModal();
