@@ -24,14 +24,14 @@
 ## Do zrobienia poza kodem
 
 - [x] Utworzenie zdalnego repozytorium na GitHubie i wypchnięcie brancha — `https://github.com/qbavsop/yatzy`, branch `android` wypchnięty (`git push -u origin android`)
-- [ ] Wypełnienie formularza **Data Safety** w Google Play Console
-- [ ] Skonfigurowanie **Play App Signing** przy tworzeniu wpisu aplikacji
+- [x] Wypełnienie formularza **Data Safety** w Google Play Console
+- [x] Skonfigurowanie **Play App Signing** przy tworzeniu wpisu aplikacji
 
 ### Polityka prywatności
 
 - [x] Napisana ręcznie (freeprivacypolicy.com po zaznaczeniu AdMob + innych opcji przestaje być darmowe, ~100$) — `privacy-policy.html` (EN) i `polityka-prywatnosci.html` (PL) w katalogu głównym repo, wzajemnie linkowane. Opisują realnie zbierane dane: identyfikator reklamowy/Advertising ID i dane urządzenia przez **AdMob**, historię zakupów i anonimowy identyfikator przez **RevenueCat**. Kontakt: qbavsop@gmail.com.
 - [x] Repo utworzone (`https://github.com/qbavsop/yatzy`, branch `android` wypchnięty), GitHub Pages włączone i zweryfikowane — obie strony działają: `https://qbavsop.github.io/yatzy/privacy-policy.html` (EN) i `https://qbavsop.github.io/yatzy/polityka-prywatnosci.html` (PL).
-- [ ] Gotowy URL wkleić w Google Play Console przy tworzeniu wpisu aplikacji, w polu "Privacy Policy" (pole obowiązkowe, bez niego nie da się opublikować).
+- [x] URL wklejony w Google Play Console (deklaracja "Polityka prywatności" w sekcji "Zawartość aplikacji").
 - [x] Link do polityki prywatności **fizycznie w samej aplikacji** (wymóg Google Play "User Data policy" / Prominent Disclosure) — zrealizowane opcją 2: przycisk "Polityka prywatności" na ekranie powitalnym otwiera `showPrivacyPolicyModal()` z treścią wyświetloną wprost w aplikacji (`PRIVACY_POLICY_HTML` w `app.js`, PL/EN), bez dodatkowego pluginu do otwierania przeglądarki.
 
 ### Data Safety (formularz w Google Play Console)
@@ -40,6 +40,22 @@
 - Trzeba zaznaczyć zbierane kategorie danych: co najmniej "Device or other IDs" (AdMob) i "Purchase history" (RevenueCat).
 - Trzeba wskazać cel zbierania (m.in. "Advertising or marketing" dla AdMob, "App functionality" dla RevenueCat) oraz potwierdzić szyfrowanie danych w tranzycie (tak — HTTPS) i możliwość zażądania usunięcia danych przez użytkownika.
 - AdMob i RevenueCat mają własne publiczne dokumenty "data safety"/"data collection" opisujące dokładnie co i jak zbierają — warto się nimi podeprzeć przy wypełnianiu, żeby deklaracja była zgodna z rzeczywistością (rozbieżność między deklaracją a faktycznym zbieraniem danych to częsty powód odrzucenia/zdjęcia apki przez Google).
+
+### Zawartość aplikacji (Play Console → Panel → "Podaj informacje o aplikacji i utwórz jej stronę")
+
+- [x] Polityka prywatności — URL wklejony
+- [x] Dane logowania — zadeklarowano że apka ma płatną zawartość (zakup "Usuń reklamy"), z instrukcją dla recenzenta jak to przetestować bez logowania
+- [x] Bezpieczeństwo danych (Data Safety) — Historia zakupów (RevenueCat, nieudostępniane, funkcjonalność aplikacji) + Identyfikatory urządzenia (AdMob Advertising ID, udostępniane, reklama/marketing)
+- [x] Reklamy / identyfikator wyświetlania reklam (AD_ID) — zadeklarowano "Tak", cel: cele marketingowe
+- [x] Funkcje finansowe — zadeklarowano "Moja aplikacja nie zawiera żadnych funkcji finansowych" (zakup przez standardowy Google Play Billing nie liczy się jako funkcja finansowa w tym sensie)
+- [x] Ocena treści (Content rating) — wypełniono
+- [x] Pozostałe deklaracje (Odbiorcy docelowi, Aplikacje instytucji państwowych, Zdrowie itd.) — wypełnione
+
+### Zasoby wizualne w Play Console
+
+- [x] Ikona aplikacji — zmniejszona z `resources/icon.png` (1024×1024) do wymaganych 512×512, `resources/icon-512.png`
+- [x] Zrzuty ekranu telefonu (4 sztuki, 1080×2414, PNG) wygenerowane bezpośrednio z działającej aplikacji na fizycznym urządzeniu — `resources/store-screenshots/1-welcome.png` … `4-gameplay.png` (ekran powitalny, wybór graczy, scorecard, wybór kości)
+- [x] Grafika promocyjna (feature graphic, 1024×500) — gotowa i wgrana
 
 ### Play App Signing
 
@@ -56,7 +72,7 @@
 - [x] Banner AdMob — pokazuje się tylko na ekranie Scorecard, wraca poprawnie po każdej turze, ma zarezerwowane miejsce w layoucie (nie zasłania przycisków X/Continue), lista kategorii przewija się wewnętrznie gdy trzeba
 - [x] Przepływ zakupu "Usuń reklamy" — poprawnie łapie błąd braku konfiguracji (`InvalidCredentialsError`) i pokazuje czytelny alert zamiast ciszy; nie pokazuje alertu przy anulowaniu przez użytkownika
 - [x] Interstitial na ekranie Wyników — potwierdzone w logach (`interstitialAdLoaded` → `showInterstitial` → `interstitialAdShowed` → `interstitialAdDismissed` po ~14s, testowa reklama wideo) po pełnym przejściu 13 rund na najnowszym buildzie
-- [ ] Prawdziwy zakup "Usuń reklamy" + "restore purchases" w trybie sandbox — konfiguracja (RevenueCat, produkt w Play Console, klucz `goog_...`) już gotowa, fizyczny telefon z Google Play Billing dostępny; sam test zakupu jeszcze nieprzeprowadzony w tej sesji. Uwaga: wymaga zainstalowania apki **przez Play Store** (Internal Testing), nie przez `adb install` lokalnego builda — sideloadowany build zwykle nie ma dostępu do prawdziwego Google Play Billing
+- [x] Prawdziwy zakup "Usuń reklamy" przetestowany end-to-end na Internal Testing (Play Store install, nie `adb install`) — zakup przez Google Play Billing przeszedł, RevenueCat zsynchronizował entitlement po restarcie apki, przycisk "Remove Ads" poprawnie się ukrył, baner na scorecard poprawnie przestał się pokazywać. Po drodze znaleziona i naprawiona ważna usterka: **`sw.js` `CACHE_NAME` nie był bumpowany przy ostatnich zmianach w `app.js`**, więc Service Worker serwował stary zcache'owany JS (ze starym kluczem testowym RevenueCat) nawet po legalnej aktualizacji z Play Store — nie tylko po `adb install -r`. Bumpowanie `CACHE_NAME` przy każdej zmianie plików z `FILES_TO_CACHE` jest teraz krytyczne dla **wszystkich** przyszłych aktualizacji, nie tylko testów lokalnych — patrz komentarz w `sw.js`. "restore purchases" (dla drugiego urządzenia/reinstalacji) niepotwierdzone osobno, ale mechanizm jest ten sam (`getCustomerInfo()` przy starcie)
 - [ ] `npx cap sync android` + przebudowa APK po każdej kolejnej zmianie w `dice-game-app/` (pamiętać: `cap sync` samo nie przebudowuje `.apk`, trzeba osobno `./gradlew assembleDebug`)
 - [x] Podpisany `.aab` zbudowany (`./gradlew bundleRelease`) — `android/app/build/outputs/bundle/release/app-release.aab` (9.6 MB), task `signReleaseBundle` przeszedł poprawnie kluczem upload
 - [x] Wgranie `.aab` na Internal Testing track w Play Console, tester dodany (self) — do zainstalowania przez opt-in link na telefonie
