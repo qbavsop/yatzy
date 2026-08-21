@@ -4,10 +4,10 @@
 
 | Co | Gdzie | Obecna wartość |
 |---|---|---|
-| RevenueCat API key | `dice-game-app/app.js` → `REVENUECAT_API_KEY` | ⚠️ ustawiony, ale to klucz **Test Store** (`test_...`) — działa tylko na wirtualnym sklepie testowym RevenueCat, nie na realnych zakupach z Google Play. Przed publikacją: podpiąć w RevenueCat prawdziwą integrację z Google Play (wymaga karty) i podmienić na klucz `goog_...` |
+| RevenueCat API key | `dice-game-app/app.js` → `REVENUECAT_API_KEY` | ✅ podmienione na produkcyjny klucz Google Play (`goog_...`). Pełna integracja skonfigurowana end-to-end: konto serwisowe Google Cloud (`revenuecat-integration@yatzy-revenuecat.iam.gserviceaccount.com`) zaproszone w Play Console z uprawnieniami do danych finansowych i informacji o aplikacji, Google Play Android Developer API włączone, dane logowania zweryfikowane w RevenueCat, konto sprzedawcy (Google Payments) skonfigurowane, produkt `remove_ads` aktywny w Play Console, entitlement `ads_removed` + Offering/Package skonfigurowane w RevenueCat |
 | AdMob banner/interstitial ad unit ID | `dice-game-app/app.js` → `ADMOB_BANNER_ID`, `ADMOB_INTERSTITIAL_ID` | ✅ podmienione na prawdziwe ID z konta AdMob |
 | AdMob App ID | `android/app/src/main/AndroidManifest.xml` → `com.google.android.gms.ads.APPLICATION_ID` | ✅ podmienione na prawdziwe App ID |
-| AdMob "initializeForTesting" | `dice-game-app/app.js` → `initMonetization()` | **⚠️ nadal `true`** — z realnymi ID reklamowymi oznacza to, że *każde* żądanie reklamy jest oznaczone jako testowe (bezpieczne teraz podczas testów, ale bez wyłączenia tego przed publikacją apka nigdy nie zarobi na realnych reklamach) |
+| AdMob "initializeForTesting" | `dice-game-app/app.js` → `initMonetization()` | ✅ wyłączone (`AdMobPlugin.initialize({})`) — produkcyjne żądania reklam. **Uwaga:** od teraz reklamy nie będą się pokazywać przy lokalnym testowaniu na fizycznym urządzeniu, dopóki apka nie przejdzie przeglądu Google (zwykle kilka dni po pierwszym uploadzie) — to normalne, nie błąd. Do lokalnych testów przywrócić tymczasowo `{ initializeForTesting: true, testingDevices: ['8B9D0F0895C17EFE0CE9C0E75DBF4AD8'] }` (patrz komentarz w kodzie) |
 | `applicationId` / package name | `capacitor.config.json`, `android/app/build.gradle`, `android/app/src/main/res/values/strings.xml` | `com.jakub.dicegame` — do potwierdzenia, czy tego chcesz używać docelowo (zmiana po opublikowaniu pierwszej wersji jest bardzo kłopotliwa) |
 
 ## Do rozważenia
@@ -19,22 +19,20 @@
 
 - [x] Konto Google Play Console (25$ jednorazowo)
 - [x] Konto AdMob (darmowe, powiązane z Google) + utworzenie jednostek reklamowych banner + interstitial dla `com.jakub.dicegame`
-- [x] Konto RevenueCat (darmowe do ok. 2.5k$/mies.) — SDK key wpięty, na razie tylko **Test Store** (bez podpiętej karty). Do zrobienia później: dodać kartę, podpiąć prawdziwy Google Play + produkt non-consumable `remove_ads`, zamienić klucz na `goog_...`
+- [x] Konto RevenueCat (darmowe do ok. 2.5k$/mies.) — pełna integracja z Google Play: klucz produkcyjny `goog_...`, produkt `remove_ads`, entitlement `ads_removed`, Offering/Package skonfigurowane
 
 ## Do zrobienia poza kodem
 
-- [ ] Utworzenie zdalnego repozytorium na GitHubie i wypchnięcie brancha (wymaga Twojej zgody — repo dziś jest czysto lokalne). Potrzebne wyłącznie pod hosting polityki prywatności (patrz niżej) — apka już nie linkuje do `rules.md`, więc to jedyny powód, dla którego GitHub Pages jest nadal potrzebny.
+- [x] Utworzenie zdalnego repozytorium na GitHubie i wypchnięcie brancha — `https://github.com/qbavsop/yatzy`, branch `android` wypchnięty (`git push -u origin android`)
 - [ ] Wypełnienie formularza **Data Safety** w Google Play Console
 - [ ] Skonfigurowanie **Play App Signing** przy tworzeniu wpisu aplikacji
 
 ### Polityka prywatności
 
 - [x] Napisana ręcznie (freeprivacypolicy.com po zaznaczeniu AdMob + innych opcji przestaje być darmowe, ~100$) — `privacy-policy.html` (EN) i `polityka-prywatnosci.html` (PL) w katalogu głównym repo, wzajemnie linkowane. Opisują realnie zbierane dane: identyfikator reklamowy/Advertising ID i dane urządzenia przez **AdMob**, historię zakupów i anonimowy identyfikator przez **RevenueCat**. Kontakt: qbavsop@gmail.com.
-- Hosting: GitHub Pages jest najprostszą opcją (statyczny plik w repo, Pages włączone jednym kliknięciem w ustawieniach repo) — wymaga wcześniej utworzenia zdalnego repozytorium na GitHubie (patrz wyżej). Po włączeniu Pages URL do wklejenia w Play Console to `https://<user>.github.io/<repo>/privacy-policy.html`.
-- Gotowy URL wkleja się w Google Play Console przy tworzeniu wpisu aplikacji, w polu "Privacy Policy" (pole obowiązkowe, bez niego nie da się opublikować).
-- **Uwaga:** Polityka Google Play ("User Data policy" / Prominent Disclosure) wymaga linku do polityki prywatności **też fizycznie w samej aplikacji** (zwykle w menu/ustawieniach), nie tylko w opisie w Play Console. To koliduje z tym, że właśnie usunęliśmy link "Zasady gry" i cały `@capacitor/browser` do otwierania zewnętrznych stron. Do wyboru, gdy polityka będzie już napisana i hostowana:
-  1. Przywrócić minimalny link + otwieranie w przeglądarce (analogicznie do usuniętego mechanizmu "Zasady gry", z powrotem `@capacitor/browser`), albo
-  2. Wyświetlić treść polityki prywatności bezpośrednio w aplikacji (nowy prosty ekran/modal z tekstem, bez dodatkowego pluginu).
+- [x] Repo utworzone (`https://github.com/qbavsop/yatzy`, branch `android` wypchnięty), GitHub Pages włączone i zweryfikowane — obie strony działają: `https://qbavsop.github.io/yatzy/privacy-policy.html` (EN) i `https://qbavsop.github.io/yatzy/polityka-prywatnosci.html` (PL).
+- [ ] Gotowy URL wkleić w Google Play Console przy tworzeniu wpisu aplikacji, w polu "Privacy Policy" (pole obowiązkowe, bez niego nie da się opublikować).
+- [x] Link do polityki prywatności **fizycznie w samej aplikacji** (wymóg Google Play "User Data policy" / Prominent Disclosure) — zrealizowane opcją 2: przycisk "Polityka prywatności" na ekranie powitalnym otwiera `showPrivacyPolicyModal()` z treścią wyświetloną wprost w aplikacji (`PRIVACY_POLICY_HTML` w `app.js`, PL/EN), bez dodatkowego pluginu do otwierania przeglądarki.
 
 ### Data Safety (formularz w Google Play Console)
 
@@ -47,7 +45,8 @@
 
 - Google Play wymaga podpisanej aplikacji (`.aab`) przed publikacją. Przy pierwszym uploadzie Play Console proponuje **Play App Signing** — Google przechowuje i zarządza kluczem produkcyjnym, deweloper podpisuje tylko kluczem "upload" lokalnie.
 - Rekomendacja: skorzystać z Play App Signing (opcja domyślna/sugerowana), a nie samodzielnie zarządzanego podpisywania — przy tym drugim utrata klucza oznacza **trwałą** utratę możliwości aktualizowania opublikowanej aplikacji.
-- Klucz upload generuje się przez Android Studio (Build → Generate Signed Bundle/APK → New key store) albo ręcznie `keytool -genkeypair`. Plik keystore **nie powinien trafić do repozytorium** (dodać do `.gitignore`, przechowywać osobno, np. w menedżerze haseł/bezpiecznym backupie).
+- [x] Klucz upload wygenerowany ręcznie przez `keytool -genkeypair` — `android/app/yatzy-upload-key.jks`, alias `upload`, ważny do 2054. Hasło (identyczne dla store i key, wymóg formatu PKCS12) zapisane w `android/app/keystore.properties`. **Oba pliki są w `.gitignore`, nie trafiły do repo — koniecznie zrób backup obu plików poza tym komputerem (menedżer haseł/bezpieczna chmura), zanim cokolwiek się z nim stanie. Bez tego pliku nie da się nigdy więcej zaktualizować opublikowanej aplikacji przez ten sam klucz upload** (Play App Signing pozwala go zresetować przez Google, ale to wymaga formalnego procesu weryfikacji i trwa dni).
+- [x] `android/app/build.gradle` skonfigurowany, żeby automatycznie podpisywać `release` buildType tym kluczem, gdy `keystore.properties` istnieje (bez błędu, gdy go nie ma — np. na innej maszynie/CI)
 
 ## Build i test
 
@@ -57,9 +56,11 @@
 - [x] Banner AdMob — pokazuje się tylko na ekranie Scorecard, wraca poprawnie po każdej turze, ma zarezerwowane miejsce w layoucie (nie zasłania przycisków X/Continue), lista kategorii przewija się wewnętrznie gdy trzeba
 - [x] Przepływ zakupu "Usuń reklamy" — poprawnie łapie błąd braku konfiguracji (`InvalidCredentialsError`) i pokazuje czytelny alert zamiast ciszy; nie pokazuje alertu przy anulowaniu przez użytkownika
 - [x] Interstitial na ekranie Wyników — potwierdzone w logach (`interstitialAdLoaded` → `showInterstitial` → `interstitialAdShowed` → `interstitialAdDismissed` po ~14s, testowa reklama wideo) po pełnym przejściu 13 rund na najnowszym buildzie
-- [ ] Prawdziwy zakup "Usuń reklamy" + "restore purchases" w trybie sandbox RevenueCat — niemożliwe do przetestowania bez konta RevenueCat, produktu w Play Console i urządzenia ze wsparciem Google Play Billing (obecny emulator go nie ma)
+- [ ] Prawdziwy zakup "Usuń reklamy" + "restore purchases" w trybie sandbox — konfiguracja (RevenueCat, produkt w Play Console, klucz `goog_...`) już gotowa, fizyczny telefon z Google Play Billing dostępny; sam test zakupu jeszcze nieprzeprowadzony w tej sesji. Uwaga: wymaga zainstalowania apki **przez Play Store** (Internal Testing), nie przez `adb install` lokalnego builda — sideloadowany build zwykle nie ma dostępu do prawdziwego Google Play Billing
 - [ ] `npx cap sync android` + przebudowa APK po każdej kolejnej zmianie w `dice-game-app/` (pamiętać: `cap sync` samo nie przebudowuje `.apk`, trzeba osobno `./gradlew assembleDebug`)
-- [ ] Dopiero po pozytywnych testach z prawdziwą konfiguracją: build podpisanego `.aab`, wgranie na Internal Testing track, a następnie Production
+- [x] Podpisany `.aab` zbudowany (`./gradlew bundleRelease`) — `android/app/build/outputs/bundle/release/app-release.aab` (9.6 MB), task `signReleaseBundle` przeszedł poprawnie kluczem upload
+- [x] Wgranie `.aab` na Internal Testing track w Play Console, tester dodany (self) — do zainstalowania przez opt-in link na telefonie
+- [ ] Po pozytywnych testach (w tym prawdziwego zakupu) — rollout na Production
 
 ## Poza zakresem tego brancha
 

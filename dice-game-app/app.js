@@ -10,7 +10,7 @@ const SAVE_STORAGE_KEY = 'diceGameApp.savedGame';
 
 const ADMOB_BANNER_ID = 'ca-app-pub-3700031909511327/1880025006';
 const ADMOB_INTERSTITIAL_ID = 'ca-app-pub-3700031909511327/7268083055';
-const REVENUECAT_API_KEY = 'test_kddFEqgKwZlKNvpsbBzwjdJBfCz';
+const REVENUECAT_API_KEY = 'goog_TfldpvVMmvFkRsRCDXRabLDpzRK';
 const ADS_REMOVED_ENTITLEMENT = 'ads_removed';
 
 // Same content as /privacy-policy.html and /polityka-prywatnosci.html hosted on GitHub Pages,
@@ -114,15 +114,11 @@ class DiceGameApp {
         if (!capacitorExports.Capacitor.isNativePlatform()) return;
 
         try {
-            // TODO before Play Store release: drop initializeForTesting and testingDevices (or gate them behind a debug flag).
-            // Real ad unit IDs are now wired in below - leaving "initializeForTesting" true means every request is
-            // marked as a test ad, so the production build would never actually earn revenue.
-            // testingDevices registers this specific dev phone so Google reliably serves a test creative
-            // instead of ERROR_CODE_NO_FILL (real ad unit IDs aren't auto-whitelisted for test ads otherwise).
-            await AdMobPlugin.initialize({
-                initializeForTesting: true,
-                testingDevices: ['8B9D0F0895C17EFE0CE9C0E75DBF4AD8']
-            });
+            // Production: real ad requests, no forced test mode. During dev this was
+            // { initializeForTesting: true, testingDevices: ['8B9D0F0895C17EFE0CE9C0E75DBF4AD8'] }
+            // to reliably get test creatives instead of ERROR_CODE_NO_FILL - restore that
+            // locally if testing on a physical device again before real ad traffic ramps up.
+            await AdMobPlugin.initialize({});
             AdMobPlugin.addListener(capacitorStripe.BannerAdPluginEvents.SizeChanged, (info) => {
                 // @capacitor-community/admob double-counts the bottom system-bar inset on Android 15+
                 // (it re-subtracts the nav bar height even though our WebView already stops above it),
