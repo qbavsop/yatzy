@@ -1,7 +1,7 @@
 {
-  "name": "Yahtzee - Dice Game Score Tracker",
-  "short_name": "Yahtzee Score tracker",
-  "description": "Score tracker for Yahtzee dice game played with physical dice",
+  "name": "Yatzy - Dice Game Score Tracker",
+  "short_name": "Yatzy Score tracker",
+  "description": "Score tracker for Yatzy dice game played with physical dice",
   "start_url": "./index.html",
   "display": "standalone",
   "orientation": "portrait",
@@ -24,7 +24,7 @@
   ],
   "screenshots": [
     {
-      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 540 720'><rect fill='%231D293D' width='540' height='720'/><text x='50%' y='40%' font-size='48' fill='%23FFFFFF' text-anchor='middle'>Yahtzee Score Tracker</text><text x='50%' y='60%' font-size='32' fill='%23FF8102' text-anchor='middle'>🎲 Dice Scorer 🎲</text></svg>",
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 540 720'><rect fill='%231D293D' width='540' height='720'/><text x='50%' y='40%' font-size='48' fill='%23FFFFFF' text-anchor='middle'>Yatzy Score Tracker</text><text x='50%' y='60%' font-size='32' fill='%23FF8102' text-anchor='middle'>🎲 Dice Scorer 🎲</text></svg>",
       "sizes": "540x720",
       "type": "image/svg+xml",
       "form_factor": "narrow"

@@ -37,9 +37,8 @@ function translateContainer(container) {
 
 // initialize language selector on DOMContentLoaded
 document.addEventListener('DOMContentLoaded', async () => {
-    const defaultLang = navigator.language.slice(0, 2) || 'en';
     const saved = localStorage.getItem('lang');
-    const initial = saved || defaultLang;
+    const initial = saved || 'en';
     await i18n.load(initial);
 
     // translate anything that might already be present (e.g. <title>)

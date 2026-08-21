@@ -1,4 +1,4 @@
-const CACHE_NAME = 'dice-game-v2';
+const CACHE_NAME = 'dice-game-v6';
 const FILES_TO_CACHE = [
     './',
     './index.html',

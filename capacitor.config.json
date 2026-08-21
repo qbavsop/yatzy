@@ -1,0 +1,14 @@
+{
+  "appId": "com.jakub.dicegame",
+  "appName": "Yatzy - Dice Game Score Tracker",
+  "webDir": "dice-game-app",
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 500,
+      "backgroundColor": "#1D293D",
+      "androidSplashResourceName": "splash",
+      "androidScaleType": "CENTER_CROP",
+      "showSpinner": false
+    }
+  }
+}

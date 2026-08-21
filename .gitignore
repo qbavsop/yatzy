@@ -1,0 +1,14 @@
+# Node
+node_modules/
+
+# Android build artifacts (keep the native project source itself)
+android/app/build/
+android/build/
+android/.gradle/
+android/local.properties
+android/captures/
+android/.idea/
+android/app/release/
+android/app/debug/
+*.keystore
+*.jks

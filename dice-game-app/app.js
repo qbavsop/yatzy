@@ -8,6 +8,60 @@ function escapeHtml(str) {
 
 const SAVE_STORAGE_KEY = 'diceGameApp.savedGame';
 
+const ADMOB_BANNER_ID = 'ca-app-pub-3700031909511327/1880025006';
+const ADMOB_INTERSTITIAL_ID = 'ca-app-pub-3700031909511327/7268083055';
+const REVENUECAT_API_KEY = 'test_kddFEqgKwZlKNvpsbBzwjdJBfCz';
+const ADS_REMOVED_ENTITLEMENT = 'ads_removed';
+
+// Same content as /privacy-policy.html and /polityka-prywatnosci.html hosted on GitHub Pages,
+// shown in-app to satisfy Google Play's "Prominent Disclosure" requirement (link must also live in the app itself).
+const PRIVACY_POLICY_HTML = {
+    en: `
+        <h3>Data collected by third-party services</h3>
+        <p><strong>Google AdMob</strong> (advertising) may collect your device's advertising identifier (Advertising ID) and other device/usage data to serve and measure banner and interstitial ads, including personalized ads where permitted.</p>
+        <p><strong>RevenueCat</strong> (in-app purchases) collects your purchase history and an anonymous app-specific user identifier to manage the optional "Remove Ads" purchase and restore it across devices.</p>
+        <h3>Why we collect this data</h3>
+        <ul>
+            <li>Advertising ID / device data (AdMob): to display and measure in-app advertising.</li>
+            <li>Purchase history / anonymous ID (RevenueCat): to unlock and restore the "Remove Ads" purchase you paid for.</li>
+        </ul>
+        <h3>Data sharing &amp; security</h3>
+        <p>This data is shared only with Google AdMob and RevenueCat, strictly to provide the functionality above. We do not sell your data. All data is encrypted in transit (HTTPS/TLS).</p>
+        <h3>Your choices</h3>
+        <ul>
+            <li>Limit ad personalization or reset your Advertising ID in Android Settings → Privacy → Ads.</li>
+            <li>Purchase "Remove Ads" to stop ads (and AdMob's ad-related data collection) entirely.</li>
+            <li>Request deletion of data held by AdMob or RevenueCat by contacting us below.</li>
+        </ul>
+        <h3>Contact</h3>
+        <p>Questions about this policy? Contact us at <a href="mailto:qbavsop@gmail.com">qbavsop@gmail.com</a>.</p>
+    `,
+    pl: `
+        <h3>Dane zbierane przez usługi zewnętrzne</h3>
+        <p><strong>Google AdMob</strong> (reklamy) może zbierać identyfikator reklamowy urządzenia (Advertising ID) i inne dane urządzenia/użycia, aby wyświetlać i mierzyć skuteczność reklam banerowych i pełnoekranowych, w tym reklam spersonalizowanych, o ile na to pozwolisz.</p>
+        <p><strong>RevenueCat</strong> (zakupy w aplikacji) zbiera historię zakupów i anonimowy identyfikator użytkownika, aby obsłużyć opcjonalny zakup "Usuń reklamy" i przywrócić go na innych urządzeniach.</p>
+        <h3>Dlaczego zbieramy te dane</h3>
+        <ul>
+            <li>Identyfikator reklamowy / dane urządzenia (AdMob): do wyświetlania i pomiaru reklam.</li>
+            <li>Historia zakupów / anonimowy identyfikator (RevenueCat): do odblokowania i przywrócenia zakupu "Usuń reklamy".</li>
+        </ul>
+        <h3>Udostępnianie danych i bezpieczeństwo</h3>
+        <p>Dane te są udostępniane wyłącznie Google AdMob i RevenueCat, tylko w celu zapewnienia powyższych funkcji. Nie sprzedajemy Twoich danych. Wszystkie dane są szyfrowane w tranzycie (HTTPS/TLS).</p>
+        <h3>Twój wybór</h3>
+        <ul>
+            <li>Ogranicz personalizację reklam lub zresetuj Advertising ID w Ustawieniach Androida → Prywatność → Reklamy.</li>
+            <li>Zakup "Usuń reklamy", aby całkowicie wyłączyć reklamy (i związane z nimi zbieranie danych przez AdMob).</li>
+            <li>Zażądaj usunięcia danych przechowywanych przez AdMob lub RevenueCat, kontaktując się z nami poniżej.</li>
+        </ul>
+        <h3>Kontakt</h3>
+        <p>Pytania dotyczące tej polityki? Napisz do nas na adres <a href="mailto:qbavsop@gmail.com">qbavsop@gmail.com</a>.</p>
+    `
+};
+
+// @capacitor-community/admob's published bundle exposes its global as "capacitorStripe"
+// (a leftover from the template it was generated from) rather than an admob-related name.
+const AdMobPlugin = capacitorStripe.AdMob;
+
 class DiceGameApp {
     constructor() {
         this.appContainer = document.getElementById('app');
@@ -18,14 +72,136 @@ class DiceGameApp {
             currentPlayerIndex: 0,
             currentRound: 1,
             gameFinished: false,
-            pendingYahtzeeBonus: null
+            pendingYahtzeeBonus: null,
+            adsRemoved: false
         };
 
+        this.wakeLock = null;
+
         this.init();
+        this.initMonetization();
+        this.initWakeLock();
     }
 
     init() {
         this.showWelcomeScreen();
+    }
+
+    // Keep the screen on for the whole session - players look away from the phone
+    // (rolling dice, waiting for their turn) often enough that it would otherwise time out.
+    async requestWakeLock() {
+        if (!('wakeLock' in navigator)) return;
+        try {
+            this.wakeLock = await navigator.wakeLock.request('screen');
+        } catch (e) {
+            console.warn('requestWakeLock failed:', e);
+        }
+    }
+
+    initWakeLock() {
+        this.requestWakeLock();
+        // The OS releases the wake lock whenever the app leaves the foreground
+        // (screen off, app switch), so it must be re-requested on return.
+        document.addEventListener('visibilitychange', () => {
+            if (document.visibilityState === 'visible') {
+                this.requestWakeLock();
+            }
+        });
+    }
+
+    // AdMob/RevenueCat only run on native builds; no-op in a plain browser
+    async initMonetization() {
+        if (!capacitorExports.Capacitor.isNativePlatform()) return;
+
+        try {
+            // TODO before Play Store release: drop initializeForTesting and testingDevices (or gate them behind a debug flag).
+            // Real ad unit IDs are now wired in below - leaving "initializeForTesting" true means every request is
+            // marked as a test ad, so the production build would never actually earn revenue.
+            // testingDevices registers this specific dev phone so Google reliably serves a test creative
+            // instead of ERROR_CODE_NO_FILL (real ad unit IDs aren't auto-whitelisted for test ads otherwise).
+            await AdMobPlugin.initialize({
+                initializeForTesting: true,
+                testingDevices: ['8B9D0F0895C17EFE0CE9C0E75DBF4AD8']
+            });
+            AdMobPlugin.addListener(capacitorStripe.BannerAdPluginEvents.SizeChanged, (info) => {
+                // @capacitor-community/admob double-counts the bottom system-bar inset on Android 15+
+                // (it re-subtracts the nav bar height even though our WebView already stops above it),
+                // so the banner floats well higher than info.height alone would suggest. Reserve extra
+                // buffer room so page content/buttons never end up underneath the ad.
+                const navBarBuffer = info.height > 0 ? 44 : 0;
+                this.appContainer.style.paddingBottom = info.height > 0
+                    ? 'calc(1rem + ' + (info.height + 16 + navBarBuffer) + 'px)'
+                    : 'calc(1rem + 16px)';
+            });
+        } catch (e) {
+            console.warn('initMonetization (AdMob) failed:', e);
+        }
+
+        try {
+            await purchasesCapacitor.Purchases.configure({ apiKey: REVENUECAT_API_KEY });
+            const { customerInfo } = await purchasesCapacitor.Purchases.getCustomerInfo();
+            this.gameState.adsRemoved = !!customerInfo.entitlements.active[ADS_REMOVED_ENTITLEMENT];
+        } catch (e) {
+            console.warn('initMonetization (RevenueCat) failed:', e);
+        }
+    }
+
+    async showBannerAd() {
+        if (!capacitorExports.Capacitor.isNativePlatform() || this.gameState.adsRemoved) return;
+        try {
+            await AdMobPlugin.showBanner({
+                adId: ADMOB_BANNER_ID,
+                adSize: capacitorStripe.BannerAdSize.ADAPTIVE_BANNER,
+                position: capacitorStripe.BannerAdPosition.BOTTOM_CENTER
+            });
+        } catch (e) {
+            console.warn('showBannerAd failed:', e);
+        }
+    }
+
+    async hideBannerAd() {
+        if (!capacitorExports.Capacitor.isNativePlatform()) return;
+        try {
+            await AdMobPlugin.removeBanner();
+            this.appContainer.style.paddingBottom = '';
+        } catch (e) {
+            console.warn('hideBannerAd failed:', e);
+        }
+    }
+
+    async showInterstitialAd() {
+        if (!capacitorExports.Capacitor.isNativePlatform() || this.gameState.adsRemoved) return;
+        try {
+            await AdMobPlugin.prepareInterstitial({ adId: ADMOB_INTERSTITIAL_ID });
+            await AdMobPlugin.showInterstitial();
+        } catch (e) {
+            console.warn('showInterstitialAd failed:', e);
+        }
+    }
+
+    async purchaseRemoveAds() {
+        if (!capacitorExports.Capacitor.isNativePlatform()) {
+            alert(i18n.t('monetization.nativeOnly'));
+            return;
+        }
+        try {
+            const offerings = await purchasesCapacitor.Purchases.getOfferings();
+            const pkg = offerings.current && offerings.current.availablePackages[0];
+            if (!pkg) {
+                alert(i18n.t('monetization.noOffering'));
+                return;
+            }
+            const { customerInfo } = await purchasesCapacitor.Purchases.purchasePackage({ aPackage: pkg });
+            this.gameState.adsRemoved = !!customerInfo.entitlements.active[ADS_REMOVED_ENTITLEMENT];
+            if (this.gameState.adsRemoved) {
+                await this.hideBannerAd();
+            }
+        } catch (e) {
+            console.warn('purchaseRemoveAds failed:', e);
+            if (!e || !e.userCancelled) {
+                alert(i18n.t('monetization.purchaseFailed'));
+            }
+        }
     }
 
     // Persist just enough state to resume a game after a reload
@@ -110,26 +286,30 @@ class DiceGameApp {
         }, interval);
     }
 
-    // ensure dropdown is present on every screen
+    // ensure dropdown is present on every screen, and always wired up
     ensureLangSelector() {
-        // if selector already exists (e.g. on welcome) nothing to do
-        if (document.getElementById('language-selector')) return;
+        // create the selector only if this screen doesn't already have one (e.g. welcome)
+        if (!document.getElementById('language-selector')) {
+            const container = document.createElement('div');
+            container.className = 'language-selector-container';
+            container.innerHTML = `
+                <select id="language-selector" class="language-selector">
+                    <option value="en" data-i18n="language.english">English</option>
+                    <option value="pl" data-i18n="language.polish">Polski</option>
+                    <option value="de" data-i18n="language.german">Deutsch</option>
+                    <option value="es" data-i18n="language.spanish">Español</option>
+                </select>
+            `;
+            this.appContainer.insertBefore(container, this.appContainer.firstChild);
+            translateContainer(container);
+        }
 
-        const container = document.createElement('div');
-        container.className = 'language-selector-container';
-        container.innerHTML = `
-            <select id="language-selector" class="language-selector">
-                <option value="en" data-i18n="language.english">English</option>
-                <option value="pl" data-i18n="language.polish">Polski</option>
-            </select>
-        `;
-        this.appContainer.insertBefore(container, this.appContainer.firstChild);
-        translateContainer(container);
-
+        // always (re)wire the listener - the template's own selector never gets one otherwise
         const sel = document.getElementById('language-selector');
         if (sel) {
             sel.value = i18n.current;
             sel.addEventListener('change', async (e) => {
+                localStorage.setItem('lang', e.target.value);
                 await i18n.load(e.target.value);
                 location.reload();
             });
@@ -163,9 +343,36 @@ class DiceGameApp {
         overlay.querySelector('#quit-confirm-no').addEventListener('click', closeModal);
         overlay.querySelector('#quit-confirm-yes').addEventListener('click', () => {
             this.saveGame();
+            this.hideBannerAd();
             closeModal();
             this.showWelcomeScreen();
         });
+    }
+
+    // Privacy policy modal, opened from the welcome screen
+    showPrivacyPolicyModal() {
+        if (document.getElementById('privacy-policy-overlay')) return;
+
+        const lang = PRIVACY_POLICY_HTML[i18n.current] ? i18n.current : 'en';
+        const overlay = document.createElement('div');
+        overlay.id = 'privacy-policy-overlay';
+        overlay.className = 'modal-overlay';
+        overlay.innerHTML = `
+            <div class="modal-dialog modal-dialog--privacy">
+                <div class="privacy-content">${PRIVACY_POLICY_HTML[lang]}</div>
+                <div class="modal-actions">
+                    <button id="privacy-policy-close" class="btn-primary" data-i18n="privacy.close">Close</button>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(overlay);
+        translateContainer(overlay);
+
+        const closeModal = () => overlay.remove();
+        overlay.addEventListener('click', (e) => {
+            if (e.target === overlay) closeModal();
+        });
+        overlay.querySelector('#privacy-policy-close').addEventListener('click', closeModal);
     }
 
     // Screen: Welcome
@@ -198,6 +405,20 @@ class DiceGameApp {
                 this.showPlayerSplash(() => this.showScorecardScreen());
             });
         }
+
+        const removeAdsBtn = this.appContainer.querySelector('#welcome-remove-ads');
+        if (this.gameState.adsRemoved) {
+            removeAdsBtn.hidden = true;
+        } else {
+            removeAdsBtn.addEventListener('click', async () => {
+                await this.purchaseRemoveAds();
+                removeAdsBtn.hidden = this.gameState.adsRemoved;
+            });
+        }
+
+        this.appContainer.querySelector('#welcome-privacy-policy').addEventListener('click', () => {
+            this.showPrivacyPolicyModal();
+        });
     }
 
     // Screen: Player Setup (merged count + names)
@@ -309,12 +530,15 @@ class DiceGameApp {
         this.renderScorecard();
 
         this.appContainer.querySelector('#proceed-to-dice').addEventListener('click', () => {
+            this.hideBannerAd();
             this.showGameplayScreen();
         });
 
         this.appContainer.querySelector('#scorecard-quit').addEventListener('click', () => {
             this.showQuitConfirmModal();
         });
+
+        this.showBannerAd();
     }
 
     renderScorecard() {
@@ -381,7 +605,7 @@ class DiceGameApp {
             row.className = 'scorecard-row ' + (isUsed ? 'used' : 'available');
 
             // const label = CATEGORY_NAMES[cat] || cat;
-            const rawIcon = cat === 'general' || cat === 'general_bonus' ? 'Yahtzee' : CATEGORY_NAMES[cat];
+            const rawIcon = cat === 'general' || cat === 'general_bonus' ? 'Yatzy' : CATEGORY_NAMES[cat];
             const icon = i18n.t(`category.${cat}`, { default: rawIcon });
 
             // show icon and value only
@@ -399,7 +623,7 @@ class DiceGameApp {
             bonusRowLower.className = 'scorecard-row';
             bonusRowLower.style.backgroundColor = '#314158';
             bonusRowLower.innerHTML = `
-                <div class="scorecard-icon crown-icon">Yahtzee Bonus</div>
+                <div class="scorecard-icon crown-icon">Yatzy Bonus</div>
                 <div class="scorecard-value">${lowerBonus}</div>
             `;
             tableCont.appendChild(bonusRowLower);
@@ -716,6 +940,7 @@ class DiceGameApp {
     // Screen 6: Results
     showResultsScreen() {
         this.clearSavedGame();
+        this.showInterstitialAd();
 
         const template = document.getElementById('screen-results');
         const screen = template.content.cloneNode(true);

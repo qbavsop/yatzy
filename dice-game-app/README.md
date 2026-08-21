@@ -1,6 +1,6 @@
-# Yahtzee - Dice Game Score Tracker
+# Yatzy - Dice Game Score Tracker
 
-A Progressive Web App (PWA) for tracking and calculating scores for the Generał (Yahtzee) dice game played with physical dice.
+A Progressive Web App (PWA) for tracking and calculating scores for the Generał (Yatzy) dice game played with physical dice.
 
 ## Features
 
@@ -48,7 +48,7 @@ Simply open `index.html` in a modern browser. Note: Service Worker requires HTTP
   - Full House: 25 points
   - Small Straight: 30 points (4 consecutive)
   - Large Straight: 40 points (5 consecutive)
-  - Yahtzee: 50 points (all 5 same)
+  - Yatzy: 50 points (all 5 same)
   - Chance: Sum of all dice
 
 ## File Structure

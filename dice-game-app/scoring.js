@@ -46,7 +46,7 @@ const CATEGORY_NAMES = {
     full: 'Full',
     ss: 'Small Straight',
     ls: 'Large Straight',
-    general: 'Yahtzee',
+    general: 'Yatzy',
     general_bonus: 'Bonus',
     chance: 'Chance'
 };

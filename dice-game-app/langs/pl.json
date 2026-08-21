@@ -1,10 +1,12 @@
 {
-  "app.title": "Yahtzee - Punktacja gry w kości",
-  "welcome.title": "Yahtzee",
+  "app.title": "Yatzy - Punktacja gry w kości",
+  "welcome.title": "Yatzy",
   "welcome.subtitle": "Punktacja gry w kości",
   "welcome.description": "Łatwe rejestrowanie wyników offline",
   "welcome.start": "Nowa gra",
   "welcome.continueGame": "Kontynuuj grę",
+  "welcome.removeAds": "Usuń reklamy",
+  "welcome.privacyPolicy": "Polityka prywatności",
 
   "playerSetup.selectPlayers": "Wybierz liczbę graczy",
   "playerSetup.playerNameLabel": "Imię gracza {{index}}",
@@ -23,7 +25,7 @@
   "gameplay.selectAllAlert": "Proszę wybrać wszystkie 5 kości",
   "gameplay.continue": "Kontynuuj",
 
-  "joker.bonusHeading": "🎉 Bonus Yahtzee!",
+  "joker.bonusHeading": "🎉 Bonus Yatzy!",
   "joker.placeText": "Wybierz, gdzie umieścić kombinację:",
   "joker.continue": "Kontynuuj",
   "joker.bonusInfo": "Bonus: +100 punktów",
@@ -40,6 +42,8 @@
 
   "language.english": "English",
   "language.polish": "Polski",
+  "language.german": "Deutsch",
+  "language.spanish": "Español",
 
   "combos.allFilled": "Wszystkie kategorie wypełnione",
   "combos.availableOptions": "Dostępne opcje:",
@@ -68,10 +72,14 @@
   "category.full": "Full",
   "category.ss": "Mały strit",
   "category.ls": "Duży strit",
-  "category.general": "Yahtzee",
+  "category.general": "Yatzy",
   "category.chance": "Szansa",
-  "category.general_bonus": "Bonus Yahtzee",
+  "category.general_bonus": "Bonus Yatzy",
   "scorecard.upperSection": "Górna",
   "scorecard.lowerSection": "Dolna",
-  "dice.countLabel": "{{value}}"
+  "dice.countLabel": "{{value}}",
+  "monetization.nativeOnly": "Ta opcja jest dostępna tylko w wersji ze sklepu.",
+  "monetization.noOffering": "Zakup jest chwilowo niedostępny. Spróbuj ponownie później.",
+  "monetization.purchaseFailed": "Nie udało się zrealizować zakupu. Spróbuj ponownie później.",
+  "privacy.close": "Zamknij"
 }

@@ -1,10 +1,12 @@
 {
-  "app.title": "Yahtzee - Dice Game Score Tracker",
-  "welcome.title": "Yahtzee",
+  "app.title": "Yatzy - Dice Game Score Tracker",
+  "welcome.title": "Yatzy",
   "welcome.subtitle": "Dice Game Scorer",
   "welcome.description": "Score your offline dice game rounds with ease",
   "welcome.start": "New Game",
   "welcome.continueGame": "Continue Game",
+  "welcome.removeAds": "Remove Ads",
+  "welcome.privacyPolicy": "Privacy Policy",
 
   "playerSetup.selectPlayers": "Select number of players",
   "playerSetup.playerNameLabel": "Player {{index}} Name",
@@ -23,7 +25,7 @@
   "gameplay.selectAllAlert": "Please select all 5 dice",
   "gameplay.continue": "Continue",
 
-  "joker.bonusHeading": "🎉 Yahtzee Bonus!",
+  "joker.bonusHeading": "🎉 Yatzy Bonus!",
   "joker.placeText": "Select where to place this dice combination:",
   "joker.continue": "Continue",
   "joker.bonusInfo": "Bonus: +100 points",
@@ -40,6 +42,8 @@
 
   "language.english": "English",
   "language.polish": "Polski",
+  "language.german": "Deutsch",
+  "language.spanish": "Español",
 
   "combos.allFilled": "All categories filled",
   "combos.availableOptions": "Available options:",
@@ -68,10 +72,14 @@
   "category.full": "Full House",
   "category.ss": "Small Straight",
   "category.ls": "Large Straight",
-  "category.general": "Yahtzee",
+  "category.general": "Yatzy",
   "category.chance": "Chance",
-  "category.general_bonus": "Yahtzee Bonus",
+  "category.general_bonus": "Yatzy Bonus",
   "scorecard.upperSection": "Upper",
   "scorecard.lowerSection": "Lower",
-  "dice.countLabel": "{{value}}"
+  "dice.countLabel": "{{value}}",
+  "monetization.nativeOnly": "This option is only available in the app store version.",
+  "monetization.noOffering": "No purchase option is available right now. Please try again later.",
+  "monetization.purchaseFailed": "The purchase could not be completed. Please try again later.",
+  "privacy.close": "Close"
 }

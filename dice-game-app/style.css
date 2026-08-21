@@ -26,7 +26,8 @@ body {
 #app {
     max-width: 480px;
     margin: 0 auto;
-    min-height: 100dvh;
+    height: 100dvh;
+    overflow-y: auto;
     display: flex;
     flex-direction: column;
     padding: 1rem;
@@ -37,6 +38,18 @@ body {
     flex-direction: column;
     gap: 2rem;
     flex: 1;
+}
+
+/* Scorecard: header and buttons (incl. reserved banner space) stay pinned in
+   view; only the category list scrolls internally if it doesn't all fit. */
+.screen-scorecard {
+    min-height: 0;
+}
+
+.screen-scorecard .scorecard-table {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
 }
 
 /* Splash/Prep Screen */
@@ -730,6 +743,28 @@ h3 {
     background-color: var(--slate-700);
 }
 
+.text-link {
+    display: block;
+    text-align: center;
+    margin-top: 0.75rem;
+    font-size: 0.85rem;
+    color: var(--slate-600);
+    text-decoration: underline;
+}
+
+.text-link:hover {
+    color: var(--white);
+}
+
+.text-link-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-family: inherit;
+    width: 100%;
+    margin-top: 0.25rem;
+}
+
 /* Modal potwierdzenia wyjścia */
 .modal-overlay {
     position: fixed;
@@ -766,6 +801,39 @@ h3 {
 
 .modal-actions button {
     flex: 1;
+}
+
+/* Modal polityki prywatności - szerszy, przewijalny, tekst wyrównany do lewej */
+.modal-dialog--privacy {
+    max-width: 560px;
+    max-height: 80vh;
+}
+
+.privacy-content {
+    overflow-y: auto;
+    text-align: left;
+    font-size: 0.9rem;
+    color: var(--white);
+    line-height: 1.5;
+}
+
+.privacy-content h3 {
+    color: var(--orange);
+    font-size: 1rem;
+    margin: 1.25rem 0 0.4rem;
+}
+
+.privacy-content h3:first-child {
+    margin-top: 0;
+}
+
+.privacy-content p {
+    margin: 0 0 0.6rem;
+}
+
+.privacy-content ul {
+    margin: 0 0 0.6rem;
+    padding-left: 1.2rem;
 }
 
 /* Responsive */

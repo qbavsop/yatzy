@@ -1,0 +1,25 @@
+{
+  "name": "dices",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build:vendor": "esbuild scripts/vendor-entry.js --bundle --format=iife --global-name=purchasesCapacitor --outfile=dice-game-app/vendor/capacitor/revenuecat-plugin.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "@capacitor-community/admob": "^8.0.0",
+    "@capacitor/android": "^8.4.1",
+    "@capacitor/cli": "^8.4.1",
+    "@capacitor/core": "^8.4.1",
+    "@capacitor/splash-screen": "^8.0.1",
+    "@revenuecat/purchases-capacitor": "^13.2.2"
+  },
+  "devDependencies": {
+    "esbuild": "^0.28.1"
+  }
+}
