@@ -2,7 +2,7 @@
 // cache-first SW, so without a version bump returning users (and even fresh Play Store
 // updates - the WebView's Cache Storage survives an app update, not just a reinstall)
 // keep running the OLD cached JS indefinitely, silently.
-const CACHE_NAME = 'dice-game-v10';
+const CACHE_NAME = 'dice-game-v12';
 const FILES_TO_CACHE = [
     './',
     './index.html',

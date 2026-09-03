@@ -113,7 +113,11 @@ class DiceGameApp {
             currentRound: 1,
             gameFinished: false,
             pendingYahtzeeBonus: null,
-            adsRemoved: false
+            adsRemoved: false,
+            // Default-deny until initMonetization's UMP consent check resolves (fast for
+            // non-EEA users, gated on an actual user choice for EEA/UK/CH).
+            canRequestAds: false,
+            privacyOptionsRequired: false
         };
 
         this.wakeLock = null;
@@ -159,6 +163,7 @@ class DiceGameApp {
             // to reliably get test creatives instead of ERROR_CODE_NO_FILL - restore that
             // locally if testing on a physical device again before real ad traffic ramps up.
             await AdMobPlugin.initialize({});
+
             AdMobPlugin.addListener(capacitorStripe.BannerAdPluginEvents.SizeChanged, (info) => {
                 // @capacitor-community/admob double-counts the bottom system-bar inset on Android 15+
                 // (it re-subtracts the nav bar height even though our WebView already stops above it),
@@ -171,6 +176,27 @@ class DiceGameApp {
             });
         } catch (e) {
             console.warn('initMonetization (AdMob) failed:', e);
+        }
+
+        // Separate try/catch: a consent-flow failure (e.g. no message configured yet in the
+        // AdMob console under Privacy & messaging) must not skip banner listener setup above.
+        // gameState.canRequestAds stays at its default (false) on any failure here - fail closed,
+        // since GDPR requires treating "consent status unknown" as "consent not given".
+        try {
+            let consentInfo = await AdMobPlugin.requestConsentInfo();
+            if (consentInfo.isConsentFormAvailable && consentInfo.status === capacitorStripe.AdmobConsentStatus.REQUIRED) {
+                consentInfo = await AdMobPlugin.showConsentForm();
+            }
+            this.gameState.canRequestAds = consentInfo.canRequestAds;
+            // PrivacyOptionsRequirementStatus (unlike AdmobConsentStatus) isn't exported by this
+            // plugin build's bundle, so compare against the raw string value instead.
+            this.gameState.privacyOptionsRequired = consentInfo.privacyOptionsRequirementStatus === 'REQUIRED';
+            const privacyOptionsBtn = this.appContainer.querySelector('#welcome-privacy-options');
+            if (privacyOptionsBtn) {
+                privacyOptionsBtn.style.display = this.gameState.privacyOptionsRequired ? '' : 'none';
+            }
+        } catch (e) {
+            console.warn('initMonetization (AdMob consent) failed:', e);
         }
 
         try {
@@ -194,7 +220,7 @@ class DiceGameApp {
     }
 
     async showBannerAd() {
-        if (!capacitorExports.Capacitor.isNativePlatform() || this.gameState.adsRemoved) return;
+        if (!capacitorExports.Capacitor.isNativePlatform() || this.gameState.adsRemoved || !this.gameState.canRequestAds) return;
         try {
             await AdMobPlugin.showBanner({
                 adId: ADMOB_BANNER_ID,
@@ -217,7 +243,7 @@ class DiceGameApp {
     }
 
     async showInterstitialAd() {
-        if (!capacitorExports.Capacitor.isNativePlatform() || this.gameState.adsRemoved) return;
+        if (!capacitorExports.Capacitor.isNativePlatform() || this.gameState.adsRemoved || !this.gameState.canRequestAds) return;
         try {
             await AdMobPlugin.prepareInterstitial({ adId: ADMOB_INTERSTITIAL_ID });
             await AdMobPlugin.showInterstitial();
@@ -462,6 +488,16 @@ class DiceGameApp {
 
         this.appContainer.querySelector('#welcome-privacy-policy').addEventListener('click', () => {
             this.showPrivacyPolicyModal();
+        });
+
+        const privacyOptionsBtn = this.appContainer.querySelector('#welcome-privacy-options');
+        privacyOptionsBtn.style.display = this.gameState.privacyOptionsRequired ? '' : 'none';
+        privacyOptionsBtn.addEventListener('click', async () => {
+            try {
+                await AdMobPlugin.showPrivacyOptionsForm();
+            } catch (e) {
+                console.warn('showPrivacyOptionsForm failed:', e);
+            }
         });
     }
 

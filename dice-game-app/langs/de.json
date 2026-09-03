@@ -7,6 +7,7 @@
   "welcome.continueGame": "Spiel fortsetzen",
   "welcome.removeAds": "Werbung entfernen",
   "welcome.privacyPolicy": "Datenschutzerklärung",
+  "welcome.privacyOptions": "Werbe-Einwilligung verwalten",
 
   "playerSetup.selectPlayers": "Anzahl der Spieler wählen",
   "playerSetup.playerNameLabel": "Name von Spieler {{index}}",
