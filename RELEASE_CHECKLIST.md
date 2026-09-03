@@ -81,7 +81,9 @@
 - [ ] `npx cap sync android` + przebudowa APK po każdej kolejnej zmianie w `dice-game-app/` (pamiętać: `cap sync` samo nie przebudowuje `.apk`, trzeba osobno `./gradlew assembleDebug`)
 - [x] Podpisany `.aab` zbudowany (`./gradlew bundleRelease`) — `android/app/build/outputs/bundle/release/app-release.aab` (9.6 MB), task `signReleaseBundle` przeszedł poprawnie kluczem upload
 - [x] Wgranie `.aab` na Internal Testing track w Play Console, tester dodany (self) — do zainstalowania przez opt-in link na telefonie
-- [ ] Po pozytywnych testach (w tym prawdziwego zakupu) — rollout na Production
+- [x] Wgranie `.aab` (versionCode 6) na ścieżkę **Zamknięte testy (Alpha)** — Play Console wymaga osobnego, zawsze rosnącego `versionCode` niezależnie od Internal Testing (nie można ponownie użyć tego samego numeru). Wersja wysłana do Google w celu sprawdzenia.
+- [ ] **Wymóg Google dla nowych kont deweloperskich**: min. **12 testerów** musi dołączyć do Zamkniętych testów i korzystać z apki przez ciągłe **14 dni**, zanim odblokuje się ścieżka Production. Trzeba dodać listę e-mail testerów i rozesłać link opt-in (Zamknięte testy → zakładka Testerzy).
+- [ ] Po pozytywnych testach (w tym prawdziwego zakupu) i spełnieniu wymogu 12 testerów/14 dni — rollout na Production
 
 ## Poza zakresem tego brancha
 
