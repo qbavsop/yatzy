@@ -176,6 +176,105 @@ const HOW_TO_PLAY_HTML = {
     `
 };
 
+const TERMS_OF_SERVICE_HTML = {
+    en: `
+        <h3>Acceptance of Terms</h3>
+        <p>By downloading, installing, or using Yatzy – Dice Game Scorer ("the App"), you agree to these Terms of Service. If you do not agree, please do not use the App. Questions can be sent to <a href="mailto:qbavsop@gmail.com">qbavsop@gmail.com</a>.</p>
+        <h3>Description of the Service</h3>
+        <p>The App is a digital scoreboard for the dice game Yatzy (also known as Generał), played with physical dice that you provide yourself. The App only calculates and records scores you enter — it does not include, sell, or license any physical game components, and it is not affiliated with or endorsed by Hasbro or any other rights holder of similarly named games.</p>
+        <h3>In-App Purchases</h3>
+        <p>The App offers an optional, one-time "Remove Ads" purchase processed through Google Play Billing. Purchases are non-refundable except as required by Google Play's refund policy, which we do not control. If you switch devices or reinstall the App, use "Restore Purchases" on the welcome screen to recover a previous purchase.</p>
+        <h3>Advertising</h3>
+        <p>The App displays advertising served by Google AdMob to support free use of the App. Purchasing "Remove Ads" disables this. See our Privacy Policy for details on data collected for advertising.</p>
+        <h3>Acceptable Use</h3>
+        <p>You agree not to reverse-engineer, decompile, or redistribute the App outside official app stores, and not to use it for any unlawful purpose.</p>
+        <h3>Intellectual Property</h3>
+        <p>The App's design, code, and branding belong to the developer. The underlying dice game itself is in the public domain and not owned by us.</p>
+        <h3>No Warranty</h3>
+        <p>The App is provided "as is" without warranties of any kind. We do not guarantee it will be error-free, uninterrupted, or that calculated scores will always be accurate.</p>
+        <h3>Limitation of Liability</h3>
+        <p>The App stores your game progress only locally on your device (no cloud backup). We are not liable for lost game data, disputes between players, or any indirect or consequential damages arising from use of the App, to the maximum extent permitted by law.</p>
+        <h3>Changes to These Terms</h3>
+        <p>We may update these Terms from time to time. Continued use of the App after changes means you accept the updated Terms.</p>
+        <h3>Governing Law</h3>
+        <p>These Terms are governed by the laws of Poland, without regard to conflict of law principles.</p>
+        <h3>Contact</h3>
+        <p>Questions about these Terms? Contact us at <a href="mailto:qbavsop@gmail.com">qbavsop@gmail.com</a>.</p>
+    `,
+    pl: `
+        <h3>Akceptacja warunków</h3>
+        <p>Pobierając, instalując lub korzystając z aplikacji Yatzy – Dice Game Scorer ("Aplikacja"), akceptujesz niniejszy Regulamin. Jeśli się nie zgadzasz, prosimy nie korzystać z Aplikacji. Pytania możesz kierować na <a href="mailto:qbavsop@gmail.com">qbavsop@gmail.com</a>.</p>
+        <h3>Opis usługi</h3>
+        <p>Aplikacja jest elektroniczną tabelą wyników do gry w kości Yatzy (znanej też jako Generał), rozgrywanej fizycznymi kośćmi, które zapewniasz we własnym zakresie. Aplikacja jedynie liczy i zapisuje wprowadzone przez Ciebie wyniki — nie zawiera, nie sprzedaje ani nie licencjonuje żadnych fizycznych elementów gry i nie jest powiązana ani zatwierdzona przez Hasbro ani żadnego innego posiadacza praw do podobnie nazwanych gier.</p>
+        <h3>Zakupy w aplikacji</h3>
+        <p>Aplikacja oferuje opcjonalny, jednorazowy zakup "Usuń reklamy" realizowany przez Google Play Billing. Zakupy nie podlegają zwrotowi poza przypadkami wynikającymi z polityki zwrotów Google Play, nad którą nie mamy kontroli. Jeśli zmieniasz urządzenie lub reinstalujesz Aplikację, użyj opcji "Przywróć zakupy" na ekranie powitalnym, aby odzyskać wcześniejszy zakup.</p>
+        <h3>Reklamy</h3>
+        <p>Aplikacja wyświetla reklamy dostarczane przez Google AdMob, aby umożliwić darmowe korzystanie z Aplikacji. Zakup "Usuń reklamy" je wyłącza. Szczegóły dotyczące danych zbieranych na potrzeby reklam znajdziesz w naszej Polityce prywatności.</p>
+        <h3>Dozwolone użycie</h3>
+        <p>Zobowiązujesz się nie dokonywać inżynierii wstecznej, dekompilacji ani redystrybucji Aplikacji poza oficjalnymi sklepami z aplikacjami oraz nie wykorzystywać jej w celach niezgodnych z prawem.</p>
+        <h3>Własność intelektualna</h3>
+        <p>Wygląd, kod i marka Aplikacji należą do dewelopera. Sama gra w kości jest domeną publiczną i nie stanowi naszej własności.</p>
+        <h3>Brak gwarancji</h3>
+        <p>Aplikacja jest dostarczana "tak jak jest", bez jakichkolwiek gwarancji. Nie gwarantujemy, że będzie wolna od błędów, będzie działać nieprzerwanie ani że wyliczone wyniki będą zawsze poprawne.</p>
+        <h3>Ograniczenie odpowiedzialności</h3>
+        <p>Aplikacja zapisuje postęp gry wyłącznie lokalnie na Twoim urządzeniu (brak kopii zapasowej w chmurze). Nie ponosimy odpowiedzialności za utracone dane gry, spory między graczami ani jakiekolwiek szkody pośrednie lub wtórne wynikające z korzystania z Aplikacji, w maksymalnym zakresie dozwolonym przez prawo.</p>
+        <h3>Zmiany w regulaminie</h3>
+        <p>Możemy od czasu do czasu aktualizować niniejszy Regulamin. Dalsze korzystanie z Aplikacji po wprowadzeniu zmian oznacza akceptację zaktualizowanego Regulaminu.</p>
+        <h3>Prawo właściwe</h3>
+        <p>Niniejszy Regulamin podlega prawu polskiemu, z pominięciem norm kolizyjnych.</p>
+        <h3>Kontakt</h3>
+        <p>Pytania dotyczące niniejszego Regulaminu? Napisz do nas na adres <a href="mailto:qbavsop@gmail.com">qbavsop@gmail.com</a>.</p>
+    `,
+    de: `
+        <h3>Annahme der Bedingungen</h3>
+        <p>Durch das Herunterladen, Installieren oder Nutzen von Yatzy – Dice Game Scorer ("die App") stimmst du diesen Nutzungsbedingungen zu. Wenn du nicht einverstanden bist, nutze die App bitte nicht. Fragen kannst du an <a href="mailto:qbavsop@gmail.com">qbavsop@gmail.com</a> richten.</p>
+        <h3>Beschreibung des Dienstes</h3>
+        <p>Die App ist eine digitale Punktetafel für das Würfelspiel Yatzy (auch bekannt als Generał), das mit echten Würfeln gespielt wird, die du selbst besorgst. Die App berechnet und speichert lediglich die von dir eingegebenen Punkte — sie enthält, verkauft oder lizenziert keine physischen Spielkomponenten und steht in keiner Verbindung zu Hasbro oder anderen Rechteinhabern ähnlich benannter Spiele.</p>
+        <h3>In-App-Käufe</h3>
+        <p>Die App bietet einen optionalen, einmaligen Kauf "Werbung entfernen" über Google Play Billing an. Käufe sind nicht erstattungsfähig, außer im Rahmen der Rückerstattungsrichtlinie von Google Play, auf die wir keinen Einfluss haben. Wenn du das Gerät wechselst oder die App neu installierst, nutze "Käufe wiederherstellen" auf dem Startbildschirm, um einen früheren Kauf wiederherzustellen.</p>
+        <h3>Werbung</h3>
+        <p>Die App zeigt Werbung von Google AdMob an, um die kostenlose Nutzung zu ermöglichen. Der Kauf "Werbung entfernen" deaktiviert diese. Details zu den für Werbung erfassten Daten findest du in unserer Datenschutzerklärung.</p>
+        <h3>Zulässige Nutzung</h3>
+        <p>Du verpflichtest dich, die App nicht zurückzuentwickeln, zu dekompilieren oder außerhalb offizieller App-Stores weiterzuverbreiten und sie nicht für rechtswidrige Zwecke zu nutzen.</p>
+        <h3>Geistiges Eigentum</h3>
+        <p>Design, Code und Marke der App gehören dem Entwickler. Das Würfelspiel selbst ist gemeinfrei und steht nicht in unserem Eigentum.</p>
+        <h3>Keine Gewährleistung</h3>
+        <p>Die App wird "wie besehen" ohne jegliche Gewährleistung bereitgestellt. Wir garantieren nicht, dass sie fehlerfrei oder unterbrechungsfrei läuft oder dass berechnete Punktzahlen immer korrekt sind.</p>
+        <h3>Haftungsbeschränkung</h3>
+        <p>Die App speichert deinen Spielfortschritt nur lokal auf deinem Gerät (kein Cloud-Backup). Wir haften nicht für verlorene Spieldaten, Streitigkeiten zwischen Spielern oder mittelbare bzw. Folgeschäden aus der Nutzung der App, soweit gesetzlich zulässig.</p>
+        <h3>Änderungen dieser Bedingungen</h3>
+        <p>Wir können diese Bedingungen von Zeit zu Zeit aktualisieren. Die fortgesetzte Nutzung der App nach Änderungen bedeutet, dass du die aktualisierten Bedingungen akzeptierst.</p>
+        <h3>Anwendbares Recht</h3>
+        <p>Diese Bedingungen unterliegen polnischem Recht unter Ausschluss des Kollisionsrechts.</p>
+        <h3>Kontakt</h3>
+        <p>Fragen zu diesen Bedingungen? Kontaktiere uns unter <a href="mailto:qbavsop@gmail.com">qbavsop@gmail.com</a>.</p>
+    `,
+    es: `
+        <h3>Aceptación de los Términos</h3>
+        <p>Al descargar, instalar o usar Yatzy – Dice Game Scorer ("la App"), aceptas estos Términos de Servicio. Si no estás de acuerdo, no uses la App. Puedes enviar preguntas a <a href="mailto:qbavsop@gmail.com">qbavsop@gmail.com</a>.</p>
+        <h3>Descripción del servicio</h3>
+        <p>La App es una tabla de puntuación digital para el juego de dados Yatzy (también conocido como Generala), que se juega con dados físicos que tú mismo proporcionas. La App solo calcula y guarda las puntuaciones que introduces — no incluye, vende ni licencia ningún componente físico del juego, y no está afiliada ni respaldada por Hasbro ni por ningún otro titular de derechos de juegos con nombres similares.</p>
+        <h3>Compras dentro de la aplicación</h3>
+        <p>La App ofrece una compra única y opcional, "Quitar anuncios", procesada mediante Google Play Billing. Las compras no son reembolsables, salvo lo previsto por la política de reembolsos de Google Play, que no controlamos. Si cambias de dispositivo o reinstalas la App, usa "Restaurar compras" en la pantalla de bienvenida para recuperar una compra anterior.</p>
+        <h3>Publicidad</h3>
+        <p>La App muestra anuncios servidos por Google AdMob para permitir su uso gratuito. Comprar "Quitar anuncios" los desactiva. Consulta nuestra Política de privacidad para más detalles sobre los datos recopilados con fines publicitarios.</p>
+        <h3>Uso aceptable</h3>
+        <p>Te comprometes a no aplicar ingeniería inversa, descompilar ni redistribuir la App fuera de las tiendas de aplicaciones oficiales, y a no usarla con fines ilícitos.</p>
+        <h3>Propiedad intelectual</h3>
+        <p>El diseño, el código y la marca de la App pertenecen al desarrollador. El juego de dados en sí es de dominio público y no es de nuestra propiedad.</p>
+        <h3>Sin garantía</h3>
+        <p>La App se proporciona "tal cual", sin garantías de ningún tipo. No garantizamos que esté libre de errores, que funcione sin interrupciones, ni que las puntuaciones calculadas sean siempre exactas.</p>
+        <h3>Limitación de responsabilidad</h3>
+        <p>La App guarda el progreso de la partida solo localmente en tu dispositivo (sin copia de seguridad en la nube). No somos responsables de la pérdida de datos de partida, disputas entre jugadores, ni de daños indirectos o derivados del uso de la App, en la máxima medida permitida por la ley.</p>
+        <h3>Cambios en estos Términos</h3>
+        <p>Podemos actualizar estos Términos de vez en cuando. El uso continuado de la App tras los cambios implica la aceptación de los Términos actualizados.</p>
+        <h3>Ley aplicable</h3>
+        <p>Estos Términos se rigen por las leyes de Polonia, sin tener en cuenta los principios de conflicto de leyes.</p>
+        <h3>Contacto</h3>
+        <p>¿Preguntas sobre estos Términos? Contáctanos en <a href="mailto:qbavsop@gmail.com">qbavsop@gmail.com</a>.</p>
+    `
+};
+
 // @capacitor-community/admob's published bundle exposes its global as "capacitorStripe"
 // (a leftover from the template it was generated from) rather than an admob-related name.
 const AdMobPlugin = capacitorStripe.AdMob;
@@ -585,6 +684,31 @@ class DiceGameApp {
         overlay.querySelector('#how-to-play-close').addEventListener('click', closeModal);
     }
 
+    showTermsOfServiceModal() {
+        if (document.getElementById('terms-of-service-overlay')) return;
+
+        const lang = TERMS_OF_SERVICE_HTML[i18n.current] ? i18n.current : 'en';
+        const overlay = document.createElement('div');
+        overlay.id = 'terms-of-service-overlay';
+        overlay.className = 'modal-overlay';
+        overlay.innerHTML = `
+            <div class="modal-dialog modal-dialog--privacy">
+                <div class="privacy-content">${TERMS_OF_SERVICE_HTML[lang]}</div>
+                <div class="modal-actions">
+                    <button id="terms-of-service-close" class="btn-primary" data-i18n="privacy.close">Close</button>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(overlay);
+        translateContainer(overlay);
+
+        const closeModal = () => overlay.remove();
+        overlay.addEventListener('click', (e) => {
+            if (e.target === overlay) closeModal();
+        });
+        overlay.querySelector('#terms-of-service-close').addEventListener('click', closeModal);
+    }
+
     // Screen: Welcome
     showWelcomeScreen() {
         const template = document.getElementById('screen-welcome');
@@ -638,6 +762,10 @@ class DiceGameApp {
 
         this.appContainer.querySelector('#welcome-privacy-policy').addEventListener('click', () => {
             this.showPrivacyPolicyModal();
+        });
+
+        this.appContainer.querySelector('#welcome-terms-of-service').addEventListener('click', () => {
+            this.showTermsOfServiceModal();
         });
 
         const privacyOptionsBtn = this.appContainer.querySelector('#welcome-privacy-options');
