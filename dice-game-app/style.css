@@ -831,7 +831,8 @@ h3 {
     margin: 0 0 0.6rem;
 }
 
-.privacy-content ul {
+.privacy-content ul,
+.privacy-content ol {
     margin: 0 0 0.6rem;
     padding-left: 1.2rem;
 }

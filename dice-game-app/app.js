@@ -102,6 +102,80 @@ const PRIVACY_POLICY_HTML = {
     `
 };
 
+// Short quick-start shown from the welcome screen - testers reported not realizing this app is
+// a scoreboard for a physical dice game (Generał/Yatzy) rather than a game in itself, and asked
+// for basic instructions. Deliberately condensed vs. the full rules in rules.md.
+const HOW_TO_PLAY_HTML = {
+    en: `
+        <h3>What is this app?</h3>
+        <p>This isn't a game — it's a digital scoreboard for the dice game Yatzy (Generał). You need 5 physical dice. The app only calculates and records your score.</p>
+        <h3>How does a turn work?</h3>
+        <ol>
+            <li>Roll all 5 dice.</li>
+            <li>Set aside any dice you want to keep, then re-roll the rest — up to 3 rolls per turn.</li>
+            <li>Pick the category that matches your roll and record the score.</li>
+        </ol>
+        <h3>How long does a game last?</h3>
+        <p>13 rounds per player. Each category can only be used once.</p>
+        <h3>Scoring at a glance</h3>
+        <p>Upper section (1s–6s): sum of matching dice. Score at least 63 points here for a +35 Upper Bonus. Lower section: Three/Four of a Kind, Full House (25 pts), Small Straight (30 pts), Large Straight (40 pts), Yatzy — five of a kind (50 pts), and Chance (sum of all dice).</p>
+        <h3>Yatzy Bonus</h3>
+        <p>A second (or later) Yatzy in the same game adds +100 points, as long as your first Yatzy was already scored as 50 points.</p>
+        <p>Highest total after 13 rounds wins.</p>
+    `,
+    pl: `
+        <h3>Czym jest ta aplikacja?</h3>
+        <p>To nie jest gra — to elektroniczna tabela wyników do gry w kości Yatzy (znanej też jako Generał). Potrzebujesz 5 fizycznych kości. Aplikacja tylko liczy i zapisuje punkty.</p>
+        <h3>Jak przebiega tura?</h3>
+        <ol>
+            <li>Rzuć wszystkimi 5 kośćmi.</li>
+            <li>Odłóż kości, które chcesz zachować, i rzuć resztą ponownie — maksymalnie 3 rzuty w turze.</li>
+            <li>Wybierz kategorię pasującą do wyniku i zapisz punkty.</li>
+        </ol>
+        <h3>Ile trwa gra?</h3>
+        <p>13 kolejek na gracza. Każda kategoria może być użyta tylko raz.</p>
+        <h3>Punktacja w skrócie</h3>
+        <p>Góra tabeli (1–6): suma kości danej wartości. Zbierz min. 63 pkt, a dostaniesz +35 pkt Bonusu górnego. Dół tabeli: Trójka, Czwórka, Full (25 pkt), Mały strit (30 pkt), Duży strit (40 pkt), Yatzy — pięć jednakowych (50 pkt), oraz Szansa (suma wszystkich kości).</p>
+        <h3>Bonus Yatzy</h3>
+        <p>Drugi i każdy kolejny Yatzy w tej samej grze daje +100 pkt, o ile pierwszy Yatzy był już zapisany jako 50 pkt.</p>
+        <p>Wygrywa osoba z najwyższą sumą po 13 kolejkach.</p>
+    `,
+    de: `
+        <h3>Was ist diese App?</h3>
+        <p>Das ist kein Spiel — sondern eine digitale Punktetafel für das Würfelspiel Yatzy. Du brauchst 5 echte Würfel. Die App berechnet und speichert nur deine Punkte.</p>
+        <h3>Wie läuft eine Runde ab?</h3>
+        <ol>
+            <li>Wirf alle 5 Würfel.</li>
+            <li>Lege die Würfel beiseite, die du behalten willst, und wirf den Rest erneut — bis zu 3 Würfe pro Runde.</li>
+            <li>Wähle die passende Kategorie und trage die Punkte ein.</li>
+        </ol>
+        <h3>Wie lange dauert ein Spiel?</h3>
+        <p>13 Runden pro Spieler. Jede Kategorie kann nur einmal genutzt werden.</p>
+        <h3>Punktesystem im Überblick</h3>
+        <p>Oberer Bereich (1er–6er): Summe der passenden Würfel. Erreiche mindestens 63 Punkte für einen Oberen Bonus von +35 Punkten. Unterer Bereich: Dreierpasch, Viererpasch, Full House (25 Pkt.), Kleine Straße (30 Pkt.), Große Straße (40 Pkt.), Yatzy — fünf gleiche (50 Pkt.), sowie Chance (Summe aller Würfel).</p>
+        <h3>Yatzy-Bonus</h3>
+        <p>Ein zweiter (oder weiterer) Yatzy im selben Spiel bringt +100 Punkte, sofern dein erster Yatzy bereits mit 50 Punkten eingetragen wurde.</p>
+        <p>Wer nach 13 Runden die höchste Summe hat, gewinnt.</p>
+    `,
+    es: `
+        <h3>¿Qué es esta app?</h3>
+        <p>Esto no es un juego — es una tabla de puntuación digital para el juego de dados Yatzy (Generala). Necesitas 5 dados físicos. La app solo calcula y guarda tu puntuación.</p>
+        <h3>¿Cómo funciona un turno?</h3>
+        <ol>
+            <li>Lanza los 5 dados.</li>
+            <li>Aparta los dados que quieras conservar y vuelve a lanzar el resto — hasta 3 tiradas por turno.</li>
+            <li>Elige la categoría que coincida con tu resultado y anota los puntos.</li>
+        </ol>
+        <h3>¿Cuánto dura una partida?</h3>
+        <p>13 rondas por jugador. Cada categoría solo se puede usar una vez.</p>
+        <h3>Puntuación resumida</h3>
+        <p>Sección superior (1s–6s): suma de los dados de ese valor. Consigue al menos 63 puntos aquí para obtener una Bonificación superior de +35 puntos. Sección inferior: Trío, Póker, Full (25 pts), Escalera pequeña (30 pts), Escalera grande (40 pts), Yatzy — cinco iguales (50 pts), y Oportunidad (suma de todos los dados).</p>
+        <h3>Bonificación Yatzy</h3>
+        <p>Un segundo (o siguiente) Yatzy en la misma partida suma +100 puntos, siempre que tu primer Yatzy ya estuviera anotado como 50 puntos.</p>
+        <p>Gana quien tenga la suma más alta después de 13 rondas.</p>
+    `
+};
+
 // @capacitor-community/admob's published bundle exposes its global as "capacitorStripe"
 // (a leftover from the template it was generated from) rather than an admob-related name.
 const AdMobPlugin = capacitorStripe.AdMob;
@@ -486,6 +560,31 @@ class DiceGameApp {
         overlay.querySelector('#privacy-policy-close').addEventListener('click', closeModal);
     }
 
+    showHowToPlayModal() {
+        if (document.getElementById('how-to-play-overlay')) return;
+
+        const lang = HOW_TO_PLAY_HTML[i18n.current] ? i18n.current : 'en';
+        const overlay = document.createElement('div');
+        overlay.id = 'how-to-play-overlay';
+        overlay.className = 'modal-overlay';
+        overlay.innerHTML = `
+            <div class="modal-dialog modal-dialog--privacy">
+                <div class="privacy-content">${HOW_TO_PLAY_HTML[lang]}</div>
+                <div class="modal-actions">
+                    <button id="how-to-play-close" class="btn-primary" data-i18n="privacy.close">Close</button>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(overlay);
+        translateContainer(overlay);
+
+        const closeModal = () => overlay.remove();
+        overlay.addEventListener('click', (e) => {
+            if (e.target === overlay) closeModal();
+        });
+        overlay.querySelector('#how-to-play-close').addEventListener('click', closeModal);
+    }
+
     // Screen: Welcome
     showWelcomeScreen() {
         const template = document.getElementById('screen-welcome');
@@ -516,6 +615,10 @@ class DiceGameApp {
                 this.showPlayerSplash(() => this.showScorecardScreen());
             });
         }
+
+        this.appContainer.querySelector('#welcome-how-to-play').addEventListener('click', () => {
+            this.showHowToPlayModal();
+        });
 
         const removeAdsBtn = this.appContainer.querySelector('#welcome-remove-ads');
         removeAdsBtn.style.display = this.gameState.adsRemoved ? 'none' : '';
