@@ -10,6 +10,10 @@ const SAVE_STORAGE_KEY = 'diceGameApp.savedGame';
 
 const ADMOB_BANNER_ID = 'ca-app-pub-3700031909511327/1880025006';
 const ADMOB_INTERSTITIAL_ID = 'ca-app-pub-3700031909511327/7268083055';
+// Typical ADAPTIVE_BANNER height (dp) on phone-width screens - used to reserve layout space
+// immediately in showBannerAd(), before the real size is known via SizeChanged. See
+// reserveBannerSpace() for why this matters (accidental-click / AdMob placement policy).
+const ESTIMATED_BANNER_HEIGHT = 60;
 const REVENUECAT_API_KEY = 'goog_TfldpvVMmvFkRsRCDXRabLDpzRK';
 const ADS_REMOVED_ENTITLEMENT = 'ads_removed';
 
@@ -165,14 +169,7 @@ class DiceGameApp {
             await AdMobPlugin.initialize({});
 
             AdMobPlugin.addListener(capacitorStripe.BannerAdPluginEvents.SizeChanged, (info) => {
-                // @capacitor-community/admob double-counts the bottom system-bar inset on Android 15+
-                // (it re-subtracts the nav bar height even though our WebView already stops above it),
-                // so the banner floats well higher than info.height alone would suggest. Reserve extra
-                // buffer room so page content/buttons never end up underneath the ad.
-                const navBarBuffer = info.height > 0 ? 44 : 0;
-                this.appContainer.style.paddingBottom = info.height > 0
-                    ? 'calc(1rem + ' + (info.height + 16 + navBarBuffer) + 'px)'
-                    : 'calc(1rem + 16px)';
+                this.reserveBannerSpace(info.height);
             });
         } catch (e) {
             console.warn('initMonetization (AdMob) failed:', e);
@@ -219,8 +216,26 @@ class DiceGameApp {
         }
     }
 
+    // @capacitor-community/admob double-counts the bottom system-bar inset on Android 15+
+    // (it re-subtracts the nav bar height even though our WebView already stops above it),
+    // so the banner floats well higher than height alone would suggest. Reserve extra
+    // buffer room so page content/buttons never end up underneath the ad.
+    reserveBannerSpace(height) {
+        const navBarBuffer = height > 0 ? 44 : 0;
+        this.appContainer.style.paddingBottom = height > 0
+            ? 'calc(1rem + ' + (height + 16 + navBarBuffer) + 'px)'
+            : 'calc(1rem + 16px)';
+    }
+
     async showBannerAd() {
         if (!capacitorExports.Capacitor.isNativePlatform() || this.gameState.adsRemoved || !this.gameState.canRequestAds) return;
+        // Reserve an estimated amount of space up front, before the banner has actually loaded,
+        // instead of waiting for the SizeChanged listener to react after the fact - that reactive-only
+        // update was letting "Next"/buttons visibly jump up right as the ad slid in underneath them
+        // (accidental-click risk, against AdMob ad placement policy). SizeChanged still fires once the
+        // real ad loads and corrects this to the exact height, but the correction is now small instead
+        // of a full empty-to-reserved jump.
+        this.reserveBannerSpace(ESTIMATED_BANNER_HEIGHT);
         try {
             await AdMobPlugin.showBanner({
                 adId: ADMOB_BANNER_ID,
@@ -229,6 +244,7 @@ class DiceGameApp {
             });
         } catch (e) {
             console.warn('showBannerAd failed:', e);
+            this.appContainer.style.paddingBottom = '';
         }
     }
 
