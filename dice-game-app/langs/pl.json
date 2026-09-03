@@ -8,6 +8,7 @@
   "welcome.removeAds": "Usuń reklamy",
   "welcome.privacyPolicy": "Polityka prywatności",
   "welcome.privacyOptions": "Zarządzaj zgodą na reklamy",
+  "welcome.restorePurchases": "Przywróć zakupy",
 
   "playerSetup.selectPlayers": "Wybierz liczbę graczy",
   "playerSetup.playerNameLabel": "Imię gracza {{index}}",
@@ -82,5 +83,8 @@
   "monetization.nativeOnly": "Ta opcja jest dostępna tylko w wersji ze sklepu.",
   "monetization.noOffering": "Zakup jest chwilowo niedostępny. Spróbuj ponownie później.",
   "monetization.purchaseFailed": "Nie udało się zrealizować zakupu. Spróbuj ponownie później.",
+  "monetization.restoreSuccess": "Twój zakup został przywrócony.",
+  "monetization.restoreNotFound": "Nie znaleziono wcześniejszego zakupu dla tego konta.",
+  "monetization.restoreFailed": "Nie udało się przywrócić zakupu. Spróbuj ponownie później.",
   "privacy.close": "Zamknij"
 }

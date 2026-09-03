@@ -8,6 +8,7 @@
   "welcome.removeAds": "Quitar anuncios",
   "welcome.privacyPolicy": "Política de privacidad",
   "welcome.privacyOptions": "Gestionar consentimiento de anuncios",
+  "welcome.restorePurchases": "Restaurar compras",
 
   "playerSetup.selectPlayers": "Selecciona el número de jugadores",
   "playerSetup.playerNameLabel": "Nombre del jugador {{index}}",
@@ -82,5 +83,8 @@
   "monetization.nativeOnly": "Esta opción solo está disponible en la versión de la tienda de aplicaciones.",
   "monetization.noOffering": "No hay ninguna opción de compra disponible en este momento. Inténtalo de nuevo más tarde.",
   "monetization.purchaseFailed": "No se pudo completar la compra. Inténtalo de nuevo más tarde.",
+  "monetization.restoreSuccess": "Tu compra se ha restaurado.",
+  "monetization.restoreNotFound": "No se encontró ninguna compra anterior para esta cuenta.",
+  "monetization.restoreFailed": "No se pudo restaurar la compra. Inténtalo de nuevo más tarde.",
   "privacy.close": "Cerrar"
 }

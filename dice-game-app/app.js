@@ -204,13 +204,13 @@ class DiceGameApp {
             // has usually already rendered (with adsRemoved still at its default false) by the
             // time this resolves. Refresh the button directly if it's still on screen.
             const removeAdsBtn = this.appContainer.querySelector('#welcome-remove-ads');
-            if (removeAdsBtn) {
-                // .hidden alone doesn't work here: .text-link's `display: block` (style.css) is an
-                // author-stylesheet rule, which beats the UA stylesheet's `[hidden] { display: none }`
-                // in the cascade regardless of selector specificity. Setting the inline style directly
-                // always wins.
-                removeAdsBtn.style.display = this.gameState.adsRemoved ? 'none' : '';
-            }
+            const restoreBtn = this.appContainer.querySelector('#welcome-restore-purchases');
+            // .hidden alone doesn't work here: .text-link's `display: block` (style.css) is an
+            // author-stylesheet rule, which beats the UA stylesheet's `[hidden] { display: none }`
+            // in the cascade regardless of selector specificity. Setting the inline style directly
+            // always wins.
+            if (removeAdsBtn) removeAdsBtn.style.display = this.gameState.adsRemoved ? 'none' : '';
+            if (restoreBtn) restoreBtn.style.display = this.gameState.adsRemoved ? 'none' : '';
         } catch (e) {
             console.warn('initMonetization (RevenueCat) failed:', e);
         }
@@ -290,6 +290,28 @@ class DiceGameApp {
             if (!e || !e.userCancelled) {
                 alert(i18n.t('monetization.purchaseFailed'));
             }
+        }
+    }
+
+    // Required by Play Store policy for non-consumable purchases: lets a user who reinstalls
+    // or switches device recover "Remove Ads" without paying again.
+    async restorePurchases() {
+        if (!capacitorExports.Capacitor.isNativePlatform()) {
+            alert(i18n.t('monetization.nativeOnly'));
+            return;
+        }
+        try {
+            const { customerInfo } = await purchasesCapacitor.Purchases.restorePurchases();
+            this.gameState.adsRemoved = !!customerInfo.entitlements.active[ADS_REMOVED_ENTITLEMENT];
+            if (this.gameState.adsRemoved) {
+                await this.hideBannerAd();
+                alert(i18n.t('monetization.restoreSuccess'));
+            } else {
+                alert(i18n.t('monetization.restoreNotFound'));
+            }
+        } catch (e) {
+            console.warn('restorePurchases failed:', e);
+            alert(i18n.t('monetization.restoreFailed'));
         }
     }
 
@@ -500,6 +522,15 @@ class DiceGameApp {
         removeAdsBtn.addEventListener('click', async () => {
             await this.purchaseRemoveAds();
             removeAdsBtn.style.display = this.gameState.adsRemoved ? 'none' : '';
+            restoreBtn.style.display = this.gameState.adsRemoved ? 'none' : '';
+        });
+
+        const restoreBtn = this.appContainer.querySelector('#welcome-restore-purchases');
+        restoreBtn.style.display = this.gameState.adsRemoved ? 'none' : '';
+        restoreBtn.addEventListener('click', async () => {
+            await this.restorePurchases();
+            removeAdsBtn.style.display = this.gameState.adsRemoved ? 'none' : '';
+            restoreBtn.style.display = this.gameState.adsRemoved ? 'none' : '';
         });
 
         this.appContainer.querySelector('#welcome-privacy-policy').addEventListener('click', () => {

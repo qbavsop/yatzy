@@ -8,6 +8,7 @@
   "welcome.removeAds": "Werbung entfernen",
   "welcome.privacyPolicy": "Datenschutzerklärung",
   "welcome.privacyOptions": "Werbe-Einwilligung verwalten",
+  "welcome.restorePurchases": "Käufe wiederherstellen",
 
   "playerSetup.selectPlayers": "Anzahl der Spieler wählen",
   "playerSetup.playerNameLabel": "Name von Spieler {{index}}",
@@ -82,5 +83,8 @@
   "monetization.nativeOnly": "Diese Option ist nur in der App-Store-Version verfügbar.",
   "monetization.noOffering": "Derzeit ist kein Kaufangebot verfügbar. Bitte versuche es später erneut.",
   "monetization.purchaseFailed": "Der Kauf konnte nicht abgeschlossen werden. Bitte versuche es später erneut.",
+  "monetization.restoreSuccess": "Dein Kauf wurde wiederhergestellt.",
+  "monetization.restoreNotFound": "Für dieses Konto wurde kein früherer Kauf gefunden.",
+  "monetization.restoreFailed": "Der Kauf konnte nicht wiederhergestellt werden. Bitte versuche es später erneut.",
   "privacy.close": "Schließen"
 }
