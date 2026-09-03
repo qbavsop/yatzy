@@ -720,6 +720,16 @@ h3 {
     gap: 0.75rem;
 }
 
+.welcome-links {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.welcome-links .text-link {
+    margin-top: 0;
+}
+
 .btn-row .btn-full {
     width: auto;
     flex: 1;
