@@ -30,7 +30,12 @@ async function main() {
   const trimmedMeta = await sharp(trimmed).metadata();
 
   const CANVAS = 1024;
-  const FILL_RATIO = 0.70; // dice occupy 70% of icon shorter dimension - fits safely within round-icon mask too
+  // Safe-zone margin is baked directly into the artwork (no XML <inset> on the foreground) -
+  // some OEM launchers (BBK/ColorOS family: Oppo/OnePlus/Realme) failed to render the adaptive
+  // icon at all when the foreground used <inset>, falling back to the system default icon, even
+  // though the packaged resources were verified byte-correct. 0.62 keeps the same visual result
+  // roughly matching a 16.7% XML inset would have produced, safely inside the round-icon mask.
+  const FILL_RATIO = 0.62;
   const longerSide = Math.max(trimmedMeta.width, trimmedMeta.height);
   const targetSize = Math.round(CANVAS * FILL_RATIO);
   const scale = targetSize / longerSide;
