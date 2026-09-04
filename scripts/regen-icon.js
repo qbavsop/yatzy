@@ -30,12 +30,15 @@ async function main() {
   const trimmedMeta = await sharp(trimmed).metadata();
 
   const CANVAS = 1024;
-  // Safe-zone margin is baked directly into the artwork (no XML <inset> on the foreground) -
-  // some OEM launchers (BBK/ColorOS family: Oppo/OnePlus/Realme) failed to render the adaptive
-  // icon at all when the foreground used <inset>, falling back to the system default icon, even
-  // though the packaged resources were verified byte-correct. 0.62 keeps the same visual result
-  // roughly matching a 16.7% XML inset would have produced, safely inside the round-icon mask.
-  const FILL_RATIO = 0.62;
+  // Both mipmap-anydpi-v26/ic_launcher(.xml|_round.xml) wrap background AND foreground in
+  // <inset android:inset="16.7%">, matching the icon setup from versionCode 6/7 - the only
+  // configuration confirmed to render correctly on BBK/ColorOS launchers (Oppo/OnePlus/Realme).
+  // Removing/asymmetrizing that inset (tried in versionCode 8 and 9) made those launchers fall
+  // back to the system default icon instead, despite byte-correct packaged resources. So this
+  // fill ratio is deliberately bigger than the legacy icon.png needs on its own - it still has to
+  // pass through that same 16.7% inset shrink (~0.666x) for the adaptive icon, landing around 53%
+  // of the canvas effectively (vs. ~45% pre-existing before any of this session's icon changes).
+  const FILL_RATIO = 0.80;
   const longerSide = Math.max(trimmedMeta.width, trimmedMeta.height);
   const targetSize = Math.round(CANVAS * FILL_RATIO);
   const scale = targetSize / longerSide;
